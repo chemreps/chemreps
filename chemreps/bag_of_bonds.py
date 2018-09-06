@@ -10,20 +10,17 @@ import glob
 from math import sqrt
 import numpy as np
 from itertools import chain
+import sys
+sys.path.append("./utils")
+from molecule import Molecule
 
-# nuclear charges
-nuc = {'H': 1, 'B': 5, 'C': 6, 'N': 7, 'O': 8, 'F': 9,
-       'P': 15, 'S': 16, 'Cl': 17, 'Se': 34, 'Br': 35, 'I': 53}
 
-
-def bag_maker(dataset, filetype):
+def bag_maker(dataset):
     '''
     Parameters
     ---------
     dataset: path
         path to all molecules in the dataset
-    filetype: str
-        molecule file type
 
     Returns
     -------
@@ -35,80 +32,29 @@ def bag_maker(dataset, filetype):
     # iterate through all of the molecules in the dataset
     #   and get the sizes of the largest bags
     bag_sizes = {}
-    for molecule in glob.iglob(dataset + '*.' + filetype):
-        # read in file
-        file = open(molecule, 'r')
-        doc = []
-        for line in file:
-            doc.append(line)
-
-        if filetype == 'xyz':
-            # read number of atoms
-            natoms = int(doc[0].split()[0])
-
-            # parse coordinates
-            coords = []
-            for i in range(natoms):
-                a_coords = doc[i + 2].split()[0:4]
-                coords.append(a_coords)
-
-            # build bags
-            bond_bag = {}
-            for i in range(natoms):
-                for j in range(i, natoms):
-                    atomi = coords[i][0]
-                    atomj = coords[j][0]
-                    zi = nuc[atomi]
-                    zj = nuc[atomj]
-
-                    if i == j:
-                        if atomi in bond_bag:
-                            bond_bag[atomi] += 1
-                        else:
-                            bond_bag[atomi] = 1
-
+    for mol_file in glob.iglob("{}/*".format(dataset)):
+        current_molecule = Molecule(mol_file)
+        # build bags
+        bond_bag = {}
+        for i in range(current_molecule.n_atom):
+            for j in range(i, current_molecule.n_atom):
+                atomi = current_molecule.sym[i]
+                atomj = current_molecule.sym[j]
+                zi = current_molecule.at_num[i]
+                zj = current_molecule.at_num[j]
+                if i == j:
+                    if atomi in bond_bag:
+                        bond_bag[atomi] += 1
                     else:
-                        if zj > zi:
-                            atomi, atomj = atomj, atomi
-                        bond = "{}{}".format(atomi, atomj)
-                        if bond in bond_bag:
-                            bond_bag[bond] += 1
-                        else:
-                            bond_bag[bond] = 1
-
-        if filetype == 'sdf' or filetype == 'mol':
-            # read number of atoms
-            natoms = int(doc[3].split()[0])
-
-            # parse coordinates
-            coords = []
-            for i in range(natoms):
-                a_coords = doc[i + 4].split()[0:4]
-                coords.append(a_coords)
-
-            # build bags
-            bond_bag = {}
-            for i in range(natoms):
-                for j in range(i, natoms):
-                    atomi = coords[i][3]
-                    atomj = coords[j][3]
-                    zi = nuc[atomi]
-                    zj = nuc[atomj]
-
-                    if i == j:
-                        if atomi in bond_bag:
-                            bond_bag[atomi] += 1
-                        else:
-                            bond_bag[atomi] = 1
-
+                        bond_bag[atomi] = 1
+                else:
+                    if zj > zi:
+                        atomi, atomj = atomj, atomi
+                    bond = "{}{}".format(atomi, atomj)
+                    if bond in bond_bag:
+                        bond_bag[bond] += 1
                     else:
-                        if zj > zi:
-                            atomi, atomj = atomj, atomi
-                        bond = "{}{}".format(atomi, atomj)
-                        if bond in bond_bag:
-                            bond_bag[bond] += 1
-                        else:
-                            bond_bag[bond] = 1
+                        bond_bag[bond] = 1
 
         # update bag_sizes with larger value
         bond_bag_key = list(bond_bag.keys())
@@ -149,107 +95,48 @@ def bag_of_bonds(mol_file, bags, bag_sizes):
     '''
     # copy bags dict to ensure it does not get edited
     bag_set = copy.deepcopy(bags)
+    current_molecule = Molecule(mol_file)
+    for i in range(current_molecule.n_atom):
+        for j in range(i, current_molecule.n_atom):
+            atomi = current_molecule.sym[i]
+            atomj = current_molecule.sym[j]
+            zi = current_molecule.at_num[i]
+            zj = current_molecule.at_num[j]
 
-    # read in file
-    file = open(mol_file, 'r')
-    filetype = mol_file.split('.')[1]
+            if i == j:
+                mii = 0.5 * zi ** 2.4
+                bag_set[atomi].append(mii)
 
-    doc = []
-    for line in file:
-        doc.append(line)
+            else:
+                if zj > zi:
+                        # swap ordering
+                    atomi, atomj = atomj, atomi
+                bond = "{}{}".format(atomi, atomj)
 
-    if filetype == 'xyz':
-        # read number of atoms
-        natoms = int(doc[0].split()[0])
+                # rij = sqrt((xi - xj)^2 + (yi - yj)^2 + (zi - zj)^2)
+                x = current_molecule.xyz[i][0] - current_molecule.xyz[j][0]
+                y = current_molecule.xyz[i][1] - current_molecule.xyz[j][1]
+                z = current_molecule.xyz[i][2] - current_molecule.xyz[j][2]
+                rij = sqrt((x ** 2) + (y ** 2) + (z ** 2))
+                mij = (zi * zj) / rij
 
-        # parse coordinates
-        coords = []
-        for i in range(natoms):
-            a_coords = doc[i + 2].split()[0:4]
-            coords.append(a_coords)
-
-        # build bags
-        for i in range(natoms):
-            for j in range(i, natoms):
-                atomi = coords[i][0]
-                atomj = coords[j][0]
-                zi = nuc[atomi]
-                zj = nuc[atomj]
-
-                if i == j:
-                    mii = 0.5 * zi ** 2.4
-                    bag_set[atomi].append(mii)
-
-                else:
-                    if zj > zi:
-                        # reverse ordering
-                        atomi, atomj = atomj, atomi
-                    bond = "{}{}".format(atomi, atomj)
-
-                    # rij = sqrt((xi - xj)^2 + (yi - yj)^2 + (zi - zj)^2)
-                    x = float(coords[i][1]) - float(coords[j][1])
-                    y = float(coords[i][2]) - float(coords[j][2])
-                    z = float(coords[i][3]) - float(coords[j][3])
-                    rij = sqrt((x ** 2) + (y ** 2) + (z ** 2))
-                    mij = (zi * zj) / rij
-
-                    bag_set[bond].append(mij)
-
-    elif filetype == 'sdf' or filetype == 'mol':
-        # read number of atoms
-        natoms = int(doc[3].split()[0])
-
-        # parse coordinates
-        coords = []
-        for i in range(natoms):
-            a_coords = doc[i + 4].split()[0:4]
-            coords.append(a_coords)
-
-        # build bags
-        for i in range(natoms):
-            for j in range(i, natoms):
-                atomi = coords[i][3]
-                atomj = coords[j][3]
-                zi = nuc[atomi]
-                zj = nuc[atomj]
-
-                if i == j:
-                    mii = 0.5 * zi ** 2.4
-                    bag_set[atomi].append(mii)
-
-                else:
-                    if zj > zi:
-                        # reverse ordering
-                        atomi, atomj = atomj, atomi
-                    bond = "{}{}".format(atomi, atomj)
-
-                    # rij = sqrt((xi - xj)^2 + (yi - yj)^2 + (zi - zj)^2)
-                    x = float(coords[i][0]) - float(coords[j][0])
-                    y = float(coords[i][1]) - float(coords[j][1])
-                    z = float(coords[i][2]) - float(coords[j][2])
-                    rij = sqrt((x ** 2) + (y ** 2) + (z ** 2))
-                    mij = (zi * zj) / rij
-
-                    bag_set[bond].append(mij)
+                bag_set[bond].append(mij)
 
         # sort bags by magnitude, pad, concactenate
-        bob = []
-        bag_keys = list(bag_set.keys())
-        for i in range(len(bag_keys)):
-            size = bag_sizes[bag_keys[i]] + 1
-            baglen = len(bag_set[bag_keys[i]])
-            if baglen > (size - 1):
-                raise Exception(
-                    '{}-bag size is too small. Increase size to {}.'.format(bag_keys[i], baglen))
-            pad = size - baglen
-            bag_set[bag_keys[i]] = sorted(bag_set[bag_keys[i]], reverse=True)
-            bag_set[bag_keys[i]].extend([0.] * pad)
-            bob.append(bag_set[bag_keys[i]])
+    bob = []
+    bag_keys = list(bag_set.keys())
+    for i in range(len(bag_keys)):
+        size = bag_sizes[bag_keys[i]] + 1
+        baglen = len(bag_set[bag_keys[i]])
+        if baglen > (size - 1):
+            raise Exception(
+                '{}-bag size is too small. Increase size to {}.'.format(bag_keys[i], baglen))
+        pad = size - baglen
+        bag_set[bag_keys[i]] = sorted(bag_set[bag_keys[i]], reverse=True)
+        bag_set[bag_keys[i]].extend([0.] * pad)
+        bob.append(bag_set[bag_keys[i]])
 
-        # flatten bob into one list and store as a np.array
-        bob = np.array(list(chain.from_iterable(bob)))
+    # flatten bob into one list and store as a np.array
+    bob = np.array(list(chain.from_iterable(bob)))
 
-        return bob
-
-    else:
-        raise Exception('{} file type is unsupported.'.format(format))
+    return bob
