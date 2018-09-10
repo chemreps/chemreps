@@ -18,7 +18,9 @@ class Molecule:
     __nuc = {'H': 1, 'B': 5, 'C': 6, 'N': 7, 'O': 8, 'F': 9,
              'P': 15, 'S': 16, 'Cl': 17, 'Se': 34, 'Br': 35, 'I': 53}
 
-    def __init__(self):
+    def __init__(self,fname=None):
+        if fname is not None:
+            self.import_file(fname)
         return None
 
     def sym2num(self, sym):
