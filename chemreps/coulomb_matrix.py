@@ -33,7 +33,7 @@ def coulomb_matrix(mol_file, size=29):
             zj = current_molecule.at_num[j]
     if current_molecule.n_atom > size:
         raise Exception(
-            'Molecule has {} atoms. Increase matrix size.'.format(n_atom))
+            'Molecule has {} atoms. Increase matrix size.'.format(current_molecule.n_atom))
     # build CM matrix
     mat = np.zeros((size, size))
     for i in range(current_molecule.n_atom):
