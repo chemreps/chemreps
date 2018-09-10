@@ -7,9 +7,7 @@ Author: Dakota Folmsbee
 
 from math import sqrt
 import numpy as np
-import sys
-sys.path.append("./utils")
-from molecule import Molecule
+from utils.molecule import Molecule
 
 
 def coulomb_matrix(mol_file, size=29):

@@ -10,9 +10,7 @@ import glob
 from math import sqrt
 import numpy as np
 from itertools import chain
-import sys
-sys.path.append("./utils")
-from molecule import Molecule
+from utils.molecule import Molecule
 
 
 def bag_maker(dataset):
