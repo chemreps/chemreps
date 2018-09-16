@@ -1,8 +1,6 @@
 '''
 Function for reading common molecule files and creating bags of bonds and
 pairwise interactions to be used in creating a Bag of Bonds representation.
-
-Author: Dakota Folmsbee
 '''
 
 import copy
@@ -11,6 +9,8 @@ from math import sqrt
 import numpy as np
 from itertools import chain
 from utils.molecule import Molecule
+from utils.bag_handler import bag_updater
+from utils.bag_updater import bag_organizer
 
 
 def bag_maker(dataset):
@@ -55,16 +55,7 @@ def bag_maker(dataset):
                         bond_bag[bond] = 1
 
         # update bag_sizes with larger value
-        bond_bag_key = list(bond_bag.keys())
-        for i in range(len(bond_bag_key)):
-            key = bond_bag_key[i]
-            if key in bag_sizes:
-                if bond_bag[key] > bag_sizes[key]:
-                    bag_sizes[key] = bond_bag[key]
-                else:
-                    pass
-            else:
-                bag_sizes[key] = bond_bag[key]
+        bag_updater(bond_bag, bag_sizes)
 
     # make empty bags to fill
     bags = {}
@@ -120,19 +111,8 @@ def bag_of_bonds(mol_file, bags, bag_sizes):
 
                 bag_set[bond].append(mij)
 
-        # sort bags by magnitude, pad, concactenate
-    bob = []
-    bag_keys = list(bag_set.keys())
-    for i in range(len(bag_keys)):
-        size = bag_sizes[bag_keys[i]] + 1
-        baglen = len(bag_set[bag_keys[i]])
-        if baglen > (size - 1):
-            raise Exception(
-                '{}-bag size is too small. Increase size to {}.'.format(bag_keys[i], baglen))
-        pad = size - baglen
-        bag_set[bag_keys[i]] = sorted(bag_set[bag_keys[i]], reverse=True)
-        bag_set[bag_keys[i]].extend([0.] * pad)
-        bob.append(bag_set[bag_keys[i]])
+    # sort bags by magnitude, pad, concactenate
+    bob = bag_organizer(bag_set, bag_sizes)
 
     # flatten bob into one list and store as a np.array
     bob = np.array(list(chain.from_iterable(bob)))
