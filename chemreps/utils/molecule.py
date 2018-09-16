@@ -17,6 +17,7 @@ class Molecule:
     """
     __nuc = {'H': 1, 'B': 5, 'C': 6, 'N': 7, 'O': 8, 'F': 9,
              'P': 15, 'S': 16, 'Cl': 17, 'Se': 34, 'Br': 35, 'I': 53}
+    __accepted_file_formats = ['xyz', 'sdf', 'mol']
 
     def __init__(self,fname=None):
         if fname is not None:
@@ -42,10 +43,14 @@ class Molecule:
             print('{} is not defined.'.format(sym))
 
     def import_file(self, fname):
-        ftype = fname.split('.')[1]
-        if ftype == 'xyz':
+        filetype = fname.split('.')[1]
+        if filetype not in Molecule.__accepted_file_formats:
+            formatted_aff = str(Molecule.__accepted_file_formats).strip('[]')
+            raise NotImplementedError(
+                'file type \'{}\'  is unsupported. Accepted formats: {}'.format(filetype, formatted_aff))
+        if filetype == 'xyz':
             self.import_xyz(fname)
-        if ftype == 'sdf' or ftype == 'mol':
+        elif filetype == 'sdf' or filetype == 'mol':
             self.import_sdf(fname)
 
     def import_xyz(self, fname):
@@ -82,9 +87,7 @@ class Molecule:
         """
         with open(fname) as f:
             lines = f.readlines()
-        print(lines[1])
         self.n_atom = int(lines[3].split()[0])
-        print(self.n_atom)
         self.sym = []
         self.at_num = []
         self.xyz = np.zeros((self.n_atom, 3))
