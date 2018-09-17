@@ -22,23 +22,25 @@ def coulomb_matrix(mol_file, size=29):
     Returns
     -------
     mat: triangle matrix
-        trianle CM matrix
+        triangle CM matrix
     '''
     current_molecule = Molecule(mol_file)
     # check to make sure # atoms is not larger than desired matrix size
     if current_molecule.n_atom > size:
         raise Exception(
             'Molecule has {} atoms. Increase matrix size.'.format(current_molecule.n_atom))
-
     # build CM matrix
-    mat = np.zeros((size, size))
+    # the size of the lower triangle of a symmetric matrix is a triangle number
+    # given by "n+1 choose 2" (binomial coefficient)
+    mat = np.zeros((int)((size*(size+1))/2))
+    count = 0
     for i in range(current_molecule.n_atom):
-        for j in range(i, current_molecule.n_atom):
+        for j in range(i+1):
             zi = current_molecule.at_num[i]
             zj = current_molecule.at_num[j]
             if i == j:
                 zij = 0.5 * zi ** 2.4
-                mat[i, i] = zij
+                mat[count] = zij
             else:
                 # rij = sqrt((xi - xj)^2 + (yi - yj)^2 + (zi - zj)^2)
                 x = current_molecule.xyz[i][0] - current_molecule.xyz[j][0]
@@ -46,7 +48,6 @@ def coulomb_matrix(mol_file, size=29):
                 z = current_molecule.xyz[i][2] - current_molecule.xyz[j][2]
                 rij = sqrt((x ** 2) + (y ** 2) + (z ** 2))
                 mij = (zi * zj) / rij
-                mat[j, i] = mij
-
-    mat = mat[np.tril_indices(size)]
+                mat[count] = mij
+            count += 1
     return mat
