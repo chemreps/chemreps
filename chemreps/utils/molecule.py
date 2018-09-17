@@ -1,4 +1,5 @@
 import numpy as np
+import cclib
 
 
 class Molecule:
@@ -19,7 +20,7 @@ class Molecule:
              'P': 15, 'S': 16, 'Cl': 17, 'Se': 34, 'Br': 35, 'I': 53}
     __accepted_file_formats = ['xyz', 'sdf', 'mol']
 
-    def __init__(self,fname=None):
+    def __init__(self, fname=None):
         if fname is not None:
             self.import_file(fname)
         return None
@@ -37,7 +38,7 @@ class Molecule:
             atomic number for symbol argument
         """
         try:
-            atomic_number = Molecule.__nuc['{}'.format(sym)]
+            atomic_number = self.__nuc['{}'.format(sym)]
             return atomic_number
         except:
             print('{} is not defined.'.format(sym))
@@ -45,9 +46,12 @@ class Molecule:
     def import_file(self, fname):
         filetype = fname.split('.')[1]
         if filetype not in Molecule.__accepted_file_formats:
-            formatted_aff = str(Molecule.__accepted_file_formats).strip('[]')
-            raise NotImplementedError(
-                'file type \'{}\'  is unsupported. Accepted formats: {}'.format(filetype, formatted_aff))
+            parsed_properly = self.import_cclib(fname)
+            if not parsed_properly:
+                formatted_aff = str(
+                    Molecule.__accepted_file_formats).strip('[]')
+                raise NotImplementedError(
+                    'file type \'{}\'  is unsupported. Accepted formats: {} or any cclib suported format.'.format(filetype, formatted_aff))
         if filetype == 'xyz':
             self.import_xyz(fname)
         elif filetype == 'sdf' or filetype == 'mol':
@@ -55,7 +59,7 @@ class Molecule:
 
     def import_xyz(self, fname):
         """
-        Imports xyz file as with Molecule class instance
+        Imports xyz file as a Molecule class instance
         Parameters:
         -----------
         fname : string
@@ -79,7 +83,7 @@ class Molecule:
 
     def import_sdf(self, fname):
         """
-        Imports xyz file as with Molecule class instance
+        Imports xyz file as a Molecule class instance
         Parameters:
         -----------
             fname : string
@@ -98,3 +102,34 @@ class Molecule:
             self.xyz[i, 0] = float(tmp[0])
             self.xyz[i, 1] = float(tmp[1])
             self.xyz[i, 2] = float(tmp[2])
+
+    def import_cclib(self, fname):
+        """
+        Imports any cclib parsable file as a Molecule class instance
+        Parameters:
+        -----------
+            fname : string
+                cclib parsable output file name
+        """
+        try:
+            data = cclib.io.ccread(fname)
+            self.n_atom = data.natom
+            self.at_num = data.atomnos
+            # This gets the atomic symbols by looking up the keys of the
+            # atomic numbers. It looks somewhat crazy but it is looking
+            # through a list of the values stored in the dictionary,
+            # matching the value to the atomic number and returning
+            # the key that corresponds to that atomic number. It works
+            # with this dictionary because the keys to values are 1 to 1.
+            self.sym = []
+            for i in data.atomnos:
+                self.sym.append(list(self.__nuc.keys())[
+                                list(self.__nuc.values()).index(i)])
+            # cclib stores the atomic coordinates in a array of shape
+            # [molecule, num atoms, 3 for xyz] because I think they might
+            # have many "molecules" from each step of an optimization or
+            # something. Here we are taking just the last one.
+            self.xyz = data.atomcoords[-1]
+            return True
+        except:
+            return False
