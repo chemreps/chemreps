@@ -8,8 +8,8 @@ from distutils.core import setup
 def setup_chemreps():
     setup(
         name='chemreps',
-        maintainer='Dakota Folmsbee',
-        maintainer_email='dfolmsbee@gmail.com',
+        maintainer='Dakota Folmsbee, Amanda Dumi, Shiv Upadhyay',
+        maintainer_email='dfolmsbee@gmail.com, amandaedumi@gmail.com, shivnupadhyay@gmail.com',
         version='0.0.1',
         packages=['chemreps'],
         license='MIT License',
