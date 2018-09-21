@@ -1,0 +1,34 @@
+'''
+Implementation of various machine learning representations for molecules 
+'''
+
+from distutils.core import setup
+
+
+def setup_chemreps():
+    setup(
+        name='chemreps',
+        maintainer='Dakota Folmsbee',
+        maintainer_email='dfolmsbee@gmail.com',
+        version='0.0.1',
+        packages=['chemreps'],
+        license='MIT License',
+        url='https://github.com/dlf57/chemreps',
+        description='Molecular machine learning representations',
+        long_description=open('README.md').read(),
+        install_requires=[
+            "cclib>=1.5",
+            "numpy>=1.12",
+        ],
+        classifiers=[
+            'Development Status :: 3 - Alpha',
+            'Intended Audience :: Science/Research',
+            'Programming Language :: Python',
+            'License :: OSI Approved :: MIT License',
+            'Topic :: Scientific/Engineering :: Chemistry',
+        ],
+    )
+
+
+if __name__ == '__main__':
+    setup_chemreps()
