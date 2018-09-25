@@ -8,9 +8,9 @@ import glob
 from math import sqrt
 import numpy as np
 from itertools import chain
-from utils.molecule import Molecule
-from utils.bag_handler import bag_updater
-from utils.bag_updater import bag_organizer
+from .utils.molecule import Molecule
+from .utils.bag_handler import bag_updater
+from .utils.bag_handler import bag_organizer
 
 
 def bag_maker(dataset):
