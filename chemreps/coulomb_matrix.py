@@ -2,7 +2,8 @@
 Function for reading common molecule files and creating a
 coulomb matrix representation.
 
-Author: Dakota Folmsbee
+Literature Reference:
+    - DOI: 10.1103/PhysRevLett.108.058301
 '''
 
 from math import sqrt

@@ -1,6 +1,9 @@
 '''
 Function for reading common molecule files and creating bags of bonds and
 pairwise interactions to be used in creating a Bag of Bonds representation.
+
+Literature Reference:
+    - DOI: 10.1021/acs.jpclett.5b00831
 '''
 
 import copy
