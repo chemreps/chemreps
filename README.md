@@ -6,6 +6,7 @@ chemreps is a Python package for the creation of molecular representations for t
 ## Current Implementations
 - Coulomb Matrix
 - Bag of Bonds
+- Bonds/Nonbonding, Angles, Torsions
 
 The citations for the literature from which the representations are implemented/adapted from can be found in the source code for each representation.
 
