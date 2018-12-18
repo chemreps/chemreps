@@ -31,7 +31,7 @@ class Molecule:
         Parameters:
         -----------
         sym : string
-                chemical symbol
+            chemical symbol
         Returns:
         --------
         at_num : int
@@ -65,6 +65,7 @@ class Molecule:
         fname : string
             xyz filename
         """
+        self.ftype = 'xyz'
         with open(fname) as f:
             lines = f.readlines()
         self.n_atom = int(lines[0].split()[0])
@@ -86,14 +87,17 @@ class Molecule:
         Imports xyz file as a Molecule class instance
         Parameters:
         -----------
-            fname : string
-                sdf or mol file name
+        fname : string
+            sdf or mol file name
         """
+        self.ftype = 'sdf'
         with open(fname) as f:
             lines = f.readlines()
         self.n_atom = int(lines[3].split()[0])
+        self.n_connect = int(lines[3].split()[1])
         self.sym = []
         self.at_num = []
+        self.n_place = []
         self.xyz = np.zeros((self.n_atom, 3))
         for i, line in enumerate(lines[4:4+self.n_atom]):
             tmp = line.split()
@@ -102,16 +106,24 @@ class Molecule:
             self.xyz[i, 0] = float(tmp[0])
             self.xyz[i, 1] = float(tmp[1])
             self.xyz[i, 2] = float(tmp[2])
+            self.n_place.append(i)
+        self.connect = np.zeros((self.n_connect, 2))
+        for i, line in enumerate(lines[4+self.n_atom:4+self.n_atom+self.n_connect]):
+            tmp = line.split()
+            self.connect[i, 0] = tmp[0]
+            self.connect[i, 1] = tmp[1]
+
 
     def import_cclib(self, fname):
         """
         Imports any cclib parsable file as a Molecule class instance
         Parameters:
         -----------
-            fname : string
-                cclib parsable output file name
+        fname : string
+            cclib parsable output file name
         """
         try:
+            self.ftype = 'cclib'
             data = cclib.io.ccread(fname)
             self.n_atom = data.natom
             self.at_num = data.atomnos

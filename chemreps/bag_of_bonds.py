@@ -14,6 +14,7 @@ from itertools import chain
 from .utils.molecule import Molecule
 from .utils.bag_handler import bag_updater
 from .utils.bag_handler import bag_organizer
+from .utils.calcs import length
 
 
 def bag_maker(dataset):
@@ -106,10 +107,7 @@ def bag_of_bonds(mol_file, bags, bag_sizes):
                 bond = "{}{}".format(atomi, atomj)
 
                 # rij = sqrt((xi - xj)^2 + (yi - yj)^2 + (zi - zj)^2)
-                x = current_molecule.xyz[i][0] - current_molecule.xyz[j][0]
-                y = current_molecule.xyz[i][1] - current_molecule.xyz[j][1]
-                z = current_molecule.xyz[i][2] - current_molecule.xyz[j][2]
-                rij = sqrt((x ** 2) + (y ** 2) + (z ** 2))
+                rij = length(current_molecule, i, j)
                 mij = (zi * zj) / rij
 
                 bag_set[bond].append(mij)
@@ -118,6 +116,6 @@ def bag_of_bonds(mol_file, bags, bag_sizes):
     bob = bag_organizer(bag_set, bag_sizes)
 
     # flatten bob into one list and store as a np.array
-    bob = np.array(list(chain.from_iterable(bob)))
+    bob = np.array(list(chain.from_iterable(bob)), dtype=np.float16)
 
     return bob

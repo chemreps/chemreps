@@ -9,6 +9,7 @@ Literature Reference:
 from math import sqrt
 import numpy as np
 from .utils.molecule import Molecule
+from .utils.calcs import length
 
 
 def coulomb_matrix(mol_file, size=29):
@@ -33,7 +34,7 @@ def coulomb_matrix(mol_file, size=29):
     # build CM matrix
     # the size of the lower triangle of a symmetric matrix is a triangle number
     # given by "n+1 choose 2" (binomial coefficient)
-    mat = np.zeros((int)((size*(size+1))/2))
+    mat = np.zeros((int)((size*(size+1))/2), dtype=np.float16)
     count = 0
     for i in range(current_molecule.n_atom):
         for j in range(i+1):
@@ -44,10 +45,7 @@ def coulomb_matrix(mol_file, size=29):
                 mat[count] = zij
             else:
                 # rij = sqrt((xi - xj)^2 + (yi - yj)^2 + (zi - zj)^2)
-                x = current_molecule.xyz[i][0] - current_molecule.xyz[j][0]
-                y = current_molecule.xyz[i][1] - current_molecule.xyz[j][1]
-                z = current_molecule.xyz[i][2] - current_molecule.xyz[j][2]
-                rij = sqrt((x ** 2) + (y ** 2) + (z ** 2))
+                rij = length(current_molecule, i, j)
                 mij = (zi * zj) / rij
                 mat[count] = mij
             count += 1
