@@ -7,6 +7,7 @@ chemreps is a Python package for the creation of molecular representations for t
 - Coulomb Matrix
 - Bag of Bonds
 - Bonds/Nonbonding, Angles, Torsions
+- Just Bonds
 
 The citations for the literature from which the representations are implemented/adapted from can be found in the source code for each representation.
 
@@ -31,6 +32,9 @@ chemreps requires:
 - Python
 - NumPy (>=1.12)
 - cclib (>=1.5)
+
+## Contributing
+If you are interested in helping develop for this project, please check out [Contributing to chemreps](https://github.com/dlf57/chemreps/wiki/Contributing-to-chemreps) in the wiki for a guide on how how to get started.
 
 ## Disclaimers:
 - These are attempts at the recreation of molecular representations from literature and may not be implemented properly.
