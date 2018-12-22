@@ -5,8 +5,9 @@ import cclib
 class Molecule:
     """
     Class to store molecule information
-    Data Structures:
-    ---------------
+
+    Attributes
+    ----------
     n_atom : int
         number of atoms
     xyz : float
@@ -28,11 +29,13 @@ class Molecule:
     def sym2num(self, sym):
         """
         Given a chemical symbol, returns the atomic number defined within the class
-        Parameters:
+
+        Parameters
         -----------
         sym : string
             chemical symbol
-        Returns:
+
+        Returns
         --------
         at_num : int
             atomic number for symbol argument
@@ -60,8 +63,9 @@ class Molecule:
     def import_xyz(self, fname):
         """
         Imports xyz file as a Molecule class instance
-        Parameters:
-        -----------
+
+        Parameters
+        ----------
         fname : string
             xyz filename
         """
@@ -85,8 +89,9 @@ class Molecule:
     def import_sdf(self, fname):
         """
         Imports xyz file as a Molecule class instance
-        Parameters:
-        -----------
+
+        Parameters
+        ----------
         fname : string
             sdf or mol file name
         """
@@ -113,11 +118,11 @@ class Molecule:
             self.connect[i, 0] = tmp[0]
             self.connect[i, 1] = tmp[1]
 
-
     def import_cclib(self, fname):
         """
         Imports any cclib parsable file as a Molecule class instance
-        Parameters:
+
+        Parameters
         -----------
         fname : string
             cclib parsable output file name

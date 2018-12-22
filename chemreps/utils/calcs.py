@@ -13,13 +13,15 @@ from math import sin
 def length(molecule, atomi, atomj):
     """
     Returns the length between two atoms
-    Parameters:
+
+    Parameters
     -----------
     molecule : object
         molecule object
     atomi, atomj : int
         atoms
-    Returns:
+
+    Returns
     --------
     rij : float
         length between the two
@@ -30,10 +32,12 @@ def length(molecule, atomi, atomj):
     rij = sqrt((x ** 2) + (y ** 2) + (z ** 2))
     return np.float16(rij)
 
+
 def uvec(i, a, b):
     """
     Returns the unit vector between two atoms
-    Parameters:
+
+    Parameters
     -----------
     i : int
         x, y, or z
@@ -52,13 +56,15 @@ def uvec(i, a, b):
 def angle(molecule, atomi, atomj, atomk):
     """
     Returns the angle between three atoms
-    Parameters:
+
+    Parameters
     -----------
     molecule : object
         molecule object
     atomi, atomj, atomk : int
         atoms
-    Returns:
+
+    Returns
     --------
     ang : float
         angle in radians
@@ -76,11 +82,13 @@ def angle(molecule, atomi, atomj, atomk):
 def ang(a, b, c):
     """
     Returns the angle between three atoms
-    Parameters:
+
+    Parameters
     -----------
     a, b, c : np.array
         coordinates
-    Returns:
+
+    Returns
     --------
     theta : float
         angle in radians
@@ -95,13 +103,15 @@ def ang(a, b, c):
 def torsion(molecule, atomi, atomj, atomk, atoml):
     """
     Returns the diehedral angle between four atoms
-    Parameters:
+
+    Parameters
     -----------
     molecule : object
         molecule object
     atomi, atomj, atomk, atoml : int
         atoms
-    Returns:
+
+    Returns
     --------
     dihedral : float
         dihedral angle in radians

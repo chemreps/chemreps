@@ -8,7 +8,8 @@ def bag_updater(bag, bag_sizes):
     """
     Checks if new bag created is larger than previous bags and updates the
     bag size if it is larger
-    Parameters:
+
+    Parameters
     -----------
     bag : dict
         dictionary of all the bags for the current molecule
@@ -34,13 +35,15 @@ def bag_updater(bag, bag_sizes):
 def bag_organizer(bag_set, bag_sizes):
     """
     Sorts bags by magnitude, pads, and concactenates into one feature list
-    Parameters:
+
+    Parameters
     -----------
     bag_set : dict
         dictionary filled with all of the current molecules information
     bag_sizes : dict
         dictionary of the largest bag sizes in the dataset
-    Returns:
+
+    Returns
     --------
     feat_list : list
         sorted and padded feature list of the current molecule

@@ -14,7 +14,6 @@ Disclaimers:
 
 import copy
 import glob
-from math import sqrt
 import numpy as np
 from itertools import chain
 from .utils.molecule import Molecule
@@ -201,7 +200,7 @@ def bag_maker(dataset):
 
 def bat(mol_file, bags, bag_sizes):
     '''
-    Paramters
+    Parameters
     ---------
     mol_file: file
         molecule file for reading in coordinates
@@ -303,7 +302,6 @@ def bat(mol_file, bags, bag_sizes):
                         abcd = [a, b, c, d]
                         if len(abcd) == len(set(abcd)):
                             tors.append(abcd)
-    torsions = []
     # Once the connections are found based upon current_molecule.connect,
     # they are translated into atom type bags and torsion angle calculated
     for i in range(len(tors)):
@@ -321,7 +319,6 @@ def bat(mol_file, bags, bag_sizes):
         abcd = a_sym + b_sym + c_sym + d_sym
         theta = torsion(current_molecule, a, b, c, d)
         bag_set[abcd].append(theta)
-
 
     # sort bags by magnitude, pad, concactenate
     bat = bag_organizer(bag_set, bag_sizes)

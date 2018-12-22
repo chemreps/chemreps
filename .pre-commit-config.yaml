@@ -6,6 +6,6 @@
   rev: v2.0.0
   hooks:
   - id: check-added-large-files
-  - id: flake8
+  #- id: flake8
   - id: requirements-txt-fixer
   - id: trailing-whitespace

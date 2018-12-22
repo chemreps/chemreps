@@ -6,7 +6,6 @@ Literature Reference:
     - DOI: 10.1103/PhysRevLett.108.058301
 '''
 
-from math import sqrt
 import numpy as np
 from .utils.molecule import Molecule
 from .utils.calcs import length
@@ -14,7 +13,7 @@ from .utils.calcs import length
 
 def coulomb_matrix(mol_file, size=29):
     '''
-    Paramters
+    Parameters
     ---------
     mol_file: string
         molecule filename for reading in coordinates
