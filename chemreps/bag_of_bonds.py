@@ -8,7 +8,6 @@ Literature Reference:
 
 import copy
 import glob
-from math import sqrt
 import numpy as np
 from itertools import chain
 from .utils.molecule import Molecule
@@ -72,7 +71,7 @@ def bag_maker(dataset):
 
 def bag_of_bonds(mol_file, bags, bag_sizes):
     '''
-    Paramters
+    Parameters
     ---------
     mol_file: file
         molecule file for reading in coordinates

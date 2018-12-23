@@ -13,7 +13,6 @@ Disclaimers:
 
 import copy
 import glob
-from math import sqrt
 import numpy as np
 from itertools import chain
 from .utils.molecule import Molecule
@@ -79,7 +78,7 @@ def bag_maker(dataset):
 
 def bonds(mol_file, bags, bag_sizes):
     '''
-    Paramters
+    Parameters
     ---------
     mol_file: file
         molecule file for reading in coordinates
@@ -123,6 +122,7 @@ def bonds(mol_file, bags, bag_sizes):
     just_bonds = bag_organizer(bag_set, bag_sizes)
 
     # flatten just_bonds into one list and store as a np.array
-    just_bonds = np.array(list(chain.from_iterable(just_bonds)), dtype=np.float16)
+    just_bonds = np.array(
+        list(chain.from_iterable(just_bonds)), dtype=np.float16)
 
     return just_bonds
