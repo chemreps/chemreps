@@ -38,7 +38,7 @@ chemreps requires:
 If you are interested in helping develop for this project, please check out [Contributing to chemreps](https://github.com/dlf57/chemreps/wiki/Contributing-to-chemreps) in the wiki for a guide on how how to get started.
 
 ## Testing
-Tests can be run in the tests directory with the command `pytest`
+Tests can be run in the top-level directory with the command `pytest`
 
 ## Disclaimers:
 - These are attempts at the recreation of molecular representations from literature and may not be implemented properly.

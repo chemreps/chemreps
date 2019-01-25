@@ -14,6 +14,12 @@ def test_xyz_import():
     return 0
 
 
+def test_cclib_import():
+    d = Molecule('data/cclib/butane.cclib')
+    assert d.n_atom == 14
+    return 0
+
+
 def test_import_failure():
     with pt.raises(NotImplementedError):
         Molecule('data/incorrect/empty.abc')
