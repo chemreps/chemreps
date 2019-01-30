@@ -16,6 +16,7 @@ import copy
 import glob
 import numpy as np
 from itertools import chain
+from collections import OrderedDict
 from .utils.molecule import Molecule
 from .utils.bag_handler import bag_updater
 from .utils.bag_handler import bag_organizer
@@ -188,6 +189,8 @@ def bag_maker(dataset):
     bag_sizes = bond_sizes.copy()
     bag_sizes.update(angle_sizes)
     bag_sizes.update(torsion_sizes)
+    # order bags alphabetically
+    bag_sizes = OrderedDict(sorted(bag_sizes.items(), key=lambda t:t[0]))
 
     # make empty bags to fill
     bags = {}
