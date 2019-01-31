@@ -21,61 +21,6 @@ from .utils.bag_handler import bag_organizer
 from .utils.calcs import length
 
 
-def bag_maker(dataset):
-    '''
-    Parameters
-    ---------
-    dataset: path
-        path to all molecules in the dataset
-
-    Returns
-    -------
-    bags: dict
-        dict of all bags for the dataset
-    bag_sizes: dict
-        dict of size of the largest bags in the dataset
-    '''
-    # iterate through all of the molecules in the dataset
-    #   and get the sizes of the largest bags
-    bag_sizes = {}
-    for mol_file in glob.iglob("{}/*".format(dataset)):
-        current_molecule = Molecule(mol_file)
-        # Throw this error to avoid using non-sdf files due to lack of
-        # bond info in the files.
-        if current_molecule.ftype != 'sdf':
-            raise NotImplementedError(
-                'file type \'{}\'  is unsupported. Accepted formats: sdf.'.format(current_molecule.ftype))
-        # build bags
-        bond_bag = {}
-        for i in range(current_molecule.n_connect):
-            # Grab the bonds from current_molecule.connect and convert to atom
-            # symbol. The subtract 1 is needed as the list values start at 1
-            # but indexing starts at 0 so we need to to grab the right symbol.
-            a = int(current_molecule.connect[i][0]) - 1
-            b = int(current_molecule.connect[i][1]) - 1
-            a_sym = current_molecule.sym[a]
-            b_sym = current_molecule.sym[b]
-            if b_sym > a_sym:
-                # swap for lexographic order
-                a_sym, b_sym = b_sym, a_sym
-            bond = "{}{}".format(a_sym, b_sym)
-            if bond in bond_bag:
-                bond_bag[bond] += 1
-            else:
-                bond_bag[bond] = 1
-
-        # update bag_sizes with larger value
-        bag_updater(bond_bag, bag_sizes)
-
-    # make empty bags to fill
-    bags = {}
-    bag_keys = list(bag_sizes.keys())
-    for i in range(len(bag_keys)):
-        bags.update({bag_keys[i]: []})
-
-    return bags, bag_sizes
-
-
 def bonds(mol_file, bags, bag_sizes):
     '''
     Parameters
