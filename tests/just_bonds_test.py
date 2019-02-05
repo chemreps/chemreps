@@ -1,19 +1,19 @@
 import numpy as np
-from chemreps.utils.molecule import Molecule
+from chemreps.bagger import BagMaker
 import chemreps.just_bonds as jb
 
 
-def test_bag_maker():
-    bags_true = {'OC': [], 'OH': [], 'CC': [], 'HC': []}
-    bags, bag_sizes = jb.bag_maker('data/sdf/')
-    assert bags == bags_true
+def test_just_bonds():
+    bags_true = {'CC': 7, 'HC': 10, 'OC': 2, 'OH': 2}
+    jbs_true = np.array([23.38 , 23.38 , 23.33 ,  0.   ,  0.   ,  0.   ,  0.   ,  0.   ,
+        5.492,  5.492,  5.492,  5.492,  5.492,  5.492,  5.492,  5.492,
+        5.492,  5.492,  0.   ,  0.   ,  0.   ,  0.   ,  0.   ,  0.   ,
+        0.   ], dtype=np.float16)
 
+    bagger = BagMaker('JustBonds', 'data/sdf/')
+    assert bagger.bag_sizes == bags_true
 
-def test_bag_of_bonds():
-    jbs_true = np.array([0., 0., 0., 0., 0., 0., 36., 36., 36., 0., 0., 0., 0., 0.,
-                         9.67, 9.67, 9.67, 9.67, 9.67, 9.67, 9.67, 9.67, 9.67, 9.67, 0.], dtype=np.float16)
-    bags, bag_sizes = jb.bag_maker('data/sdf/')
-    jbs = jb.bonds('data/sdf/butane.sdf', bags, bag_sizes)
+    jbs = jb.bonds('data/sdf/butane.sdf', bagger.bags, bagger.bag_sizes)
     assert np.allclose(jbs, jbs_true, 1e-4) == True
 
 
