@@ -10,7 +10,7 @@ def setup_chemreps():
         name='chemreps',
         maintainer='Dakota Folmsbee, Amanda Dumi, Shiv Upadhyay',
         maintainer_email='dfolmsbee@gmail.com, amandaedumi@gmail.com, shivnupadhyay@gmail.com',
-        version='0.0.3',
+        version='0.0.4',
         packages=['chemreps', 'chemreps.utils'],
         license='MIT License',
         url='https://github.com/dlf57/chemreps',
