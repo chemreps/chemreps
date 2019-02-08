@@ -32,12 +32,12 @@ pip install -e .
 
 #### Dependencies
 chemreps requires:
-- Python
+- Python (>=3.6)
 - NumPy (>=1.12)
 - cclib (>=1.5)
 
 ## Contributing
-If you are interested in helping develop for this project, please check out [Contributing to chemreps](https://github.com/dlf57/chemreps/wiki/Contributing-to-chemreps) in the wiki for a guide on how how to get started.
+If you are interested in helping develop for this project, please check out [Contributing to chemreps](https://github.com/dlf57/chemreps/wiki/Contributing-to-chemreps) in the wiki for a guide on how to get started.
 
 ## Testing
 Tests can be run in the top-level directory with the command `pytest -v --cov=chemreps tests/`
