@@ -11,6 +11,14 @@ Subpackages
 Submodules
 ----------
 
+chemreps.bagger module
+----------------------
+
+.. automodule:: chemreps.bagger
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 chemreps.bag\_of\_bonds module
 ------------------------------
 
