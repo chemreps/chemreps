@@ -45,7 +45,7 @@ class Molecule:
             atomic_number = self.__nuc['{}'.format(sym)]
             return atomic_number
         except:
-            print('{} is not defined.'.format(sym))
+            raise KeyError('{} is not defined.'.format(sym))
 
     def import_file(self, fname):
         filetype = os.path.splitext(fname)[1].split('.')[1]
