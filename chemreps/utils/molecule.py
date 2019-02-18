@@ -1,5 +1,6 @@
 import numpy as np
 import cclib
+import os
 
 
 class Molecule:
@@ -47,7 +48,7 @@ class Molecule:
             print('{} is not defined.'.format(sym))
 
     def import_file(self, fname):
-        filetype = fname.split('.')[1]
+        filetype = os.path.splitext(fname)[1].split('.')[1]
         if filetype not in Molecule.__accepted_file_formats:
             parsed_properly = self.import_cclib(fname)
             if not parsed_properly:
