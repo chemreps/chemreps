@@ -8,4 +8,7 @@ Representation tutorials:
     - Bag of Bonds: How to make a representation for a molecule file
     - Handling multiple molecules: Example of how to make representations for an entire dataset
 
+2. Just Bonds
+    - Same as the bag of bonds notebook except it is performed using the just bonds representation.
+
 Disclaimer: In order to run these interactive notebooks locally Jupyter needs to be installed.
