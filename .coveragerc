@@ -1,0 +1,4 @@
+[report]
+exclude_lines =
+    atomi, atomj = atomj, atomi
+    a, c = c, a

@@ -1,20 +1,32 @@
 import numpy as np
-from chemreps.bagger import BagMaker
+import pytest as pt
+from collections import OrderedDict
 import chemreps.just_bonds as jb
+from chemreps.bagger import BagMaker
 
 
 def test_just_bonds():
-    bags_true = {'CC': 7, 'HC': 10, 'OC': 2, 'OH': 2}
-    jbs_true = np.array([23.38 , 23.38 , 23.33 ,  0.   ,  0.   ,  0.   ,  0.   ,  0.   ,
-        5.492,  5.492,  5.492,  5.492,  5.492,  5.492,  5.492,  5.492,
-        5.492,  5.492,  0.   ,  0.   ,  0.   ,  0.   ,  0.   ,  0.   ,
-        0.   ], dtype=np.float16)
+    bags_true = OrderedDict(
+        [('CC', 13), ('HC', 16), ('NC', 5), ('NH', 1), ('OC', 6), ('OH', 2), ('SC', 2)])
+    jbs_true = np.array([23.3750, 23.3750, 23.3281, 0.0000, 0.0000, 0.0000,
+    0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 5.4922,
+    5.4922, 5.4922, 5.4922, 5.4922, 5.4922, 5.4922, 5.4922, 5.4922, 5.4922,
+    0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
+    0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
+    0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
+    0.0000], dtype=np.float16)
 
     bagger = BagMaker('JustBonds', 'data/sdf/')
     assert bagger.bag_sizes == bags_true
 
-    jbs = jb.bonds('data/sdf/butane.sdf', bagger.bags, bagger.bag_sizes)
-    assert np.allclose(jbs, jbs_true, 1e-4) == True
+    rep = jb.bonds('data/sdf/butane.sdf', bagger.bags, bagger.bag_sizes)
+    assert np.allclose(rep, jbs_true, 1e-4) == True
+
+    with pt.raises(NotImplementedError):
+        jbs = jb.bonds('data/xyz/butane.xyz', bagger.bags, bagger.bag_sizes)
+
+    with pt.raises(NotImplementedError):
+        bagger = BagMaker('JustBonds', 'data/xyz/')
 
 
 if __name__ == "__main__":
