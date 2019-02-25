@@ -13,7 +13,7 @@ def setup_chemreps():
         version='0.0.4',
         packages=['chemreps', 'chemreps.utils'],
         license='MIT License',
-        url='https://github.com/dlf57/chemreps',
+        url='https://github.com/chemreps/chemreps',
         description='Molecular machine learning representations',
         long_description=open('README.md').read(),
         install_requires=[
