@@ -8,6 +8,9 @@ from chemreps.bag_of_bonds import bag_of_bonds
 def test_bag_of_bonds():
     bags_true = OrderedDict([('C', 16), ('CC', 120), ('CH', 288), ('H', 18), ('HH', 153), ('N', 2), ('NC', 32), ('NH', 36), (
         'NN', 1), ('O', 5), ('OC', 80), ('OH', 90), ('ON', 10), ('OO', 10), ('S', 1), ('SC', 16), ('SH', 18), ('SN', 2), ('SO', 5)])
+
+
+
     bobs_true = np.array([36.8438, 36.8438, 36.8438, 36.8438, 0.0000, 0.0000,
     0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000,
     0.0000, 0.0000, 23.3750, 23.3750, 23.3281, 14.1484, 14.1484, 9.1953, 0.0000,
@@ -117,6 +120,10 @@ def test_bag_of_bonds():
     rep = bag_of_bonds('data/sdf/butane.sdf', bagger.bags, bagger.bag_sizes)
     assert np.allclose(rep, bobs_true, 1e-4) == True
 
+    with pt.raises(Exception):
+        bagger = BagMaker('BoB', 'data/sdf/')
+        bad_sizes = OrderedDict([('C', 1), ('CC', 1), ('CH', 1), ('H', 1), ('HH', 153), ('N', 2), ('NC', 32), ('NH', 36), ('NN', 1), ('O', 5), ('OC', 80), ('OH', 90), ('ON', 10), ('OO', 10), ('S', 1), ('SC', 16), ('SH', 18), ('SN', 2), ('SO', 5)])
+        rep = bag_of_bonds('data/sdf/butane.sdf', bagger.bags, bad_sizes)
 
 if __name__ == "__main__":
     print("This is a test of the bag of bonds representation in chemreps to be evaluated with pytest")

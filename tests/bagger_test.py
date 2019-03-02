@@ -9,4 +9,4 @@ def test_bagger_general():
 
 
 if __name__ == "__main__":
-    print("This is a test of the bag of bonds representation in chemreps to be evaluated with pytest")
+    print("This is a test of the bagger, bag updater, and bag organizer in chemreps to be evaluated with pytest")
