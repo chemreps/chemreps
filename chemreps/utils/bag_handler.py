@@ -25,8 +25,6 @@ def bag_updater(bag, bag_sizes):
         if key in bag_sizes:
             if bag[key] > bag_sizes[key]:
                 bag_sizes[key] = bag[key]
-            else:
-                pass
         # if the bag is not in bag_sizes, add it to bag_sizes
         else:
             bag_sizes[key] = bag[key]
