@@ -7,12 +7,23 @@ To run the example notebooks in a web-hosted environment, click the binder badge
 This will launch a hosted instance of the notebooks, without requiring and installation on your part.
 
 Representation tutorials:
-1. Bag of Bonds
+1. Coulomb Matrix
+    - Coulomb Matrix: How to make a representation for a molecule file
+    - Handling multiple molecules: Example of how to make representations for an entire dataset
+
+2. Bag of Bonds
     - BagMaker: How to make bags for your dataset
     - Bag of Bonds: How to make a representation for a molecule file
     - Handling multiple molecules: Example of how to make representations for an entire dataset
+    
+3. Bonds/Nonbonding, Angles, Torsions
+    - BagMaker: How to make bags for your dataset
+    - Bonds Angles Torsions: How to make a representation for a molecule file
+    - Handling multiple molecules: Example of how to make representations for an entire dataset
 
-2. Just Bonds
-    - Same as the bag of bonds notebook except it is performed using the just bonds representation.
-
+4. Just Bonds
+    - BagMaker: How to make bags for your dataset
+    - Just Bonds: How to make a representation for a molecule file
+    - Handling multiple molecules: Example of how to make representations for an entire dataset
+    
 Disclaimer: In order to run these interactive notebooks locally Jupyter needs to be installed.
