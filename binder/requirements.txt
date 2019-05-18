@@ -1,0 +1,4 @@
+cclib
+numpy
+pandas
+git+git://github.com/chemreps/chemreps@master
