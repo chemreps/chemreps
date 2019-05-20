@@ -1,6 +1,10 @@
 # Representation Tutorials
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/chemreps/chemreps/master?filepath=examples%2F)
+
 This directory contains interactive Jupyter notebooks to help show how chemreps can be used to make various representations of molecules for machine learning.
+To run the example notebooks in a web-hosted environment, click the binder badge above. 
+This will launch a hosted instance of the notebooks, without requiring and installation on your part.
 
 Representation tutorials:
 1. Bag of Bonds
