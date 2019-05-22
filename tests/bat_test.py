@@ -148,6 +148,9 @@ def test_bat():
     rep = bat('data/sdf/butane.sdf', bagger.bags, bagger.bag_sizes)
     assert np.all(np.abs(bat_true-rep) <= 1e-4) == True
 
+    rep = bat('data/cml/butane.cml', bagger.bags, bagger.bag_sizes)
+    assert np.all(np.abs(bat_true-rep) <= 1e-4) == True
+
     with pt.raises(NotImplementedError):
         rep = bat('data/xyz/butane.xyz', bagger.bags, bagger.bag_sizes)
 

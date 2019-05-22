@@ -7,7 +7,7 @@ Literature References:
     - DOI: 10.1063/1.4964627
 
 Disclaimers:
-    - This only works for mdl/sdf type files
+    - This only works for mol, sdf, and cml type files
     - This is an attempt at the recreation from literature and may not be
       implemented as exactly as it is in the literature source
 '''
@@ -41,12 +41,13 @@ def bat(mol_file, bags, bag_sizes):
     bat: vector
         vector of all bonds, angles, torsions in the molecule
     '''
+    accepted_file_formats = ['sdf', 'mol', 'cml']
     # copy bags dict to ensure it does not get edited
     bag_set = copy.deepcopy(bags)
     current_molecule = Molecule(mol_file)
-    if current_molecule.ftype != 'sdf':
+    if current_molecule.ftype not in accepted_file_formats:
         raise NotImplementedError(
-            'file type \'{}\'  is unsupported. Accepted formats: sdf.'.format(current_molecule.ftype))
+            'file type \'{}\'  is unsupported. Accepted formats: {}.'.format(current_molecule.ftype, accepted_file_formats))
     # grab bonds/nonbonds
     for i in range(current_molecule.n_atom):
         for j in range(i, current_molecule.n_atom):

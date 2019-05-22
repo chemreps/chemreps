@@ -1,13 +1,13 @@
 '''
 Function for reading common molecule files and creating bags of just bonds to
 be used in creating a Just Bonds representation. This is an adaption of the
-Bag of Bonds representaiton that removes the atom and nonbonding bags.
+Bag of Bonds representaiton that removes the nonbonding terms.
 
 Literature Reference:
     - DOI: 10.1021/acs.jpclett.5b00831
 
 Disclaimers:
-    - This only works for mdl/sdf type files
+    - This only works for mol, sdf, and cml type files
     - This is an adaption and may not be a good representation
 '''
 
@@ -37,12 +37,24 @@ def bonds(mol_file, bags, bag_sizes):
     just_bonds: vector
         vector of just bonds of the molecule
     '''
+    accepted_file_formats = ['sdf', 'mol', 'cml']
     # copy bags dict to ensure it does not get edited
     bag_set = copy.deepcopy(bags)
     current_molecule = Molecule(mol_file)
-    if current_molecule.ftype != 'sdf':
+    if current_molecule.ftype not in accepted_file_formats:
         raise NotImplementedError(
-            'file type \'{}\'  is unsupported. Accepted formats: sdf.'.format(current_molecule.ftype))
+            'file type \'{}\'  is unsupported. Accepted formats: sdf, mol, cml.'.format(current_molecule.ftype))
+    for i in range(current_molecule.n_atom):
+        for j in range(i, current_molecule.n_atom):
+            atomi = current_molecule.sym[i]
+            atomj = current_molecule.sym[j]
+            zi = current_molecule.at_num[i]
+            zj = current_molecule.at_num[j]
+
+            if i == j:
+                mii = 0.5 * zi ** 2.4
+                bag_set[atomi].append(mii)
+
     for i in range(current_molecule.n_connect):
         a = int(current_molecule.connect[i][0]) - 1
         b = int(current_molecule.connect[i][1]) - 1

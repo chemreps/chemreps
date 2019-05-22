@@ -1,3 +1,6 @@
+'''
+Molecule class for parsing molecule information from various chemical filetypes.
+'''
 import numpy as np
 import cclib
 import os
@@ -11,16 +14,40 @@ class Molecule:
     ----------
     n_atom : int
         number of atoms
-    xyz : float
+    xyz : array
         xyz coordinates. Size: (n_atom,3)
-    sym :  string
-        List of atomic symbol. Size: (n_atom,1)
-    at_num :
-        List of atomic numbers. Size: (n_atom,1)
+    sym :  list
+        list of atomic symbol. Size: (n_atom,1)
+    at_num : list
+        list of atomic numbers. Size: (n_atom,1)
+    n_connect : int
+        number of bonds (not for xyz)
+    connect : list
+        list of bond connectivity from file (Note: index starts at 1 from file
+        so need to subtract 1 from connectivity when converting to atomic
+        symbol). Size: (n_atom,2) (not for xyz)
     """
-    __nuc = {'H': 1, 'B': 5, 'C': 6, 'N': 7, 'O': 8, 'F': 9,
-             'P': 15, 'S': 16, 'Cl': 17, 'Se': 34, 'Br': 35, 'I': 53}
-    __accepted_file_formats = ['xyz', 'sdf', 'mol']
+    __nuc = {'H': 1, 'He': 2, 'Li': 3, 'Be': 4, 'B': 5, 'C': 6, 'N': 7,
+             'O': 8, 'F': 9, 'Ne': 10, 'Na': 11, 'Mg': 12, 'Al': 13, 'Si': 14,
+             'P': 15, 'S': 16, 'Cl': 17, 'Ar': 18, 'K': 19, 'Ca': 20, 'Sc': 21,
+             'Ti': 22, 'V': 23, 'Cr': 24, 'Mn': 25, 'Fe': 26, 'Co': 27,
+             'Ni': 28, 'Cu': 29, 'Zn': 30, 'Ga': 31, 'Ge': 32, 'As': 33,
+             'Se': 34, 'Br': 35, 'Kr': 36, 'Rb': 37, 'Sr': 38, 'Y': 39,
+             'Zr': 40, 'Nb': 41, 'Mo': 42, 'Tc': 43, 'Ru': 44, 'Rh': 45,
+             'Pd': 46, 'Ag': 47, 'Cd': 48, 'In': 49, 'Sn': 50, 'Sb': 51,
+             'Te': 52, 'I': 53, 'Xe': 54, 'Cs': 55, 'Ba': 56, 'La': 57,
+             'Ce': 58, 'Pr': 59, 'Nd': 60, 'Pm': 61, 'Sm': 62, 'Eu': 63,
+             'Gd': 64, 'Tb': 65, 'Dy': 66, 'Ho': 67, 'Er': 68, 'Tm': 69,
+             'Yb': 70, 'Lu': 71, 'Hf': 72, 'Ta': 73, 'W': 74, 'Re': 75,
+             'Os': 76, 'Ir': 77, 'Pt': 78, 'Au': 79, 'Hg': 80, 'Tl': 81,
+             'Pb': 82, 'Bi': 83, 'Po': 84, 'At': 85, 'Rn': 86, 'Fr': 87,
+             'Ra': 88, 'Ac': 89, 'Th': 90, 'Pa': 91, 'U': 92, 'Np': 93,
+             'Pu': 94, 'Am': 95, 'Cm': 96, 'Bk': 97, 'Cf': 98, 'Es': 99,
+             'Fm': 100, 'Md': 101, 'No': 102, 'Lr': 103, 'Rf': 104,
+             'Db': 105, 'Sg': 106, 'Bh': 107, 'Hs': 108, 'Mt': 109,
+             'Ds': 110, 'Rg': 111, 'Cn': 112, 'Nh': 113, 'Fl': 114,
+             'Mc': 115, 'Lv': 116, 'Ts': 117, 'Og': 118}
+    __accepted_file_formats = ['xyz', 'sdf', 'mol', 'cml']
 
     def __init__(self, fname=None):
         if fname is not None:
@@ -60,6 +87,8 @@ class Molecule:
             self.import_xyz(fname)
         elif filetype == 'sdf' or filetype == 'mol':
             self.import_sdf(fname)
+        elif filetype == 'cml':
+            self.import_cml(fname)
 
     def import_xyz(self, fname):
         """
@@ -89,7 +118,7 @@ class Molecule:
 
     def import_sdf(self, fname):
         """
-        Imports xyz file as a Molecule class instance
+        Imports sdf and mol file as a Molecule class instance
 
         Parameters
         ----------
@@ -103,7 +132,6 @@ class Molecule:
         self.n_connect = int(lines[3].split()[1])
         self.sym = []
         self.at_num = []
-        self.n_place = []
         self.xyz = np.zeros((self.n_atom, 3))
         for i, line in enumerate(lines[4:4+self.n_atom]):
             tmp = line.split()
@@ -112,12 +140,47 @@ class Molecule:
             self.xyz[i, 0] = float(tmp[0])
             self.xyz[i, 1] = float(tmp[1])
             self.xyz[i, 2] = float(tmp[2])
-            self.n_place.append(i)
         self.connect = np.zeros((self.n_connect, 2))
         for i, line in enumerate(lines[4+self.n_atom:4+self.n_atom+self.n_connect]):
             tmp = line.split()
             self.connect[i, 0] = tmp[0]
             self.connect[i, 1] = tmp[1]
+
+    def import_cml(self, fname):
+        """
+        Imports cml file as a Molecule class instance
+
+        Parameters
+        ----------
+        fname : string
+            cml file name
+        """
+        self.ftype = 'cml'
+        with open(fname) as f:
+            lines = f.readlines()
+        self.n_atom = 0
+        self.n_connect = 0
+        self.sym = []
+        self.at_num = []
+        self.xyz = []
+        self.connect = []
+        for i in range(len(lines)):
+            if lines[i].split()[0] == '<atom':
+                self.n_atom += 1
+                tmp = lines[i].split()
+                self.sym.append(tmp[2].split('"')[1])
+                self.at_num.append(self.sym2num(tmp[2].split('"')[1]))
+                x = float(tmp[3].split('"')[1])
+                y = float(tmp[4].split('"')[1])
+                z = float(tmp[5].split('"')[1])
+                self.xyz.append([x, y, z])
+            elif lines[i].split()[0] == '<bond':
+                self.n_connect += 1
+                tmp = lines[i].split()
+                a = int(tmp[1].split('"')[1].split('a')[1])
+                b = int(tmp[2].split('"')[0].split('a')[1])
+                self.connect.append([a, b])
+        self.xyz = np.array(self.xyz)
 
     def import_cclib(self, fname):
         """
