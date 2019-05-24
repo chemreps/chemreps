@@ -16,6 +16,9 @@ def test_cclib_import():
     d = Molecule('data/cclib/butane.cclib')
     assert d.n_atom == 14
 
+def test_cml_import():
+    d = Molecule('data/cml/butane.cml')
+    assert d.n_atom == 14
 
 def test_import_failure():
     with pt.raises(NotImplementedError):

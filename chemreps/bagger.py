@@ -120,6 +120,7 @@ class BagMaker:
         bag_sizes: dict
             dict of size of the largest bags in the dataset
         '''
+        accepted_file_formats = ['sdf', 'mol', 'cml']
         # iterate through all of the molecules in the dataset
         #   and get the sizes of the largest bags
         bond_sizes = {}
@@ -127,9 +128,9 @@ class BagMaker:
         torsion_sizes = {}
         for mol_file in glob.iglob("{}/*".format(dataset)):
             current_molecule = Molecule(mol_file)
-            if current_molecule.ftype != 'sdf':
+            if current_molecule.ftype not in accepted_file_formats:
                 raise NotImplementedError(
-                    'file type \'{}\'  is unsupported. Accepted formats: sdf.'.format(current_molecule.ftype))
+                    'file type \'{}\'  is unsupported. Accepted formats: {}.'.format(current_molecule.ftype, accepted_file_formats))
             # build bags
             bond_bag = {}
             angle_bag = {}
@@ -296,6 +297,7 @@ class BagMaker:
         bag_sizes: dict
             dict of size of the largest bags in the dataset
         '''
+        accepted_file_formats = ['sdf', 'mol', 'cml']
         # iterate through all of the molecules in the dataset
         #   and get the sizes of the largest bags
         self.bag_sizes = {}
@@ -303,11 +305,23 @@ class BagMaker:
             current_molecule = Molecule(mol_file)
             # Throw this error to avoid using non-sdf files due to lack of
             # bond info in the files.
-            if current_molecule.ftype != 'sdf':
+            if current_molecule.ftype not in accepted_file_formats:
                 raise NotImplementedError(
-                    'file type \'{}\'  is unsupported. Accepted formats: sdf.'.format(current_molecule.ftype))
+                    'file type \'{}\'  is unsupported. Accepted formats: {}.'.format(current_molecule.ftype, accepted_file_formats))
             # build bags
             bond_bag = {}
+            for i in range(current_molecule.n_atom):
+                for j in range(i, current_molecule.n_atom):
+                    atomi = current_molecule.sym[i]
+                    atomj = current_molecule.sym[j]
+                    zi = current_molecule.at_num[i]
+                    zj = current_molecule.at_num[j]
+                    if i == j:
+                        if atomi in bond_bag:
+                            bond_bag[atomi] += 1
+                        else:
+                            bond_bag[atomi] = 1
+
             for i in range(current_molecule.n_connect):
                 # Grab the bonds from current_molecule.connect and convert to atom
                 # symbol. The subtract 1 is needed as the list values start at 1
