@@ -12,6 +12,7 @@ def setup_chemreps():
         maintainer_email='dfolmsbee@gmail.com, amandaedumi@gmail.com, shivnupadhyay@gmail.com',
         version='0.0.4',
         packages=['chemreps', 'chemreps.utils'],
+        package_data={'chemreps': ['data/*.pkl']},
         license='MIT License',
         url='https://github.com/chemreps/chemreps',
         description='Molecular machine learning representations',
