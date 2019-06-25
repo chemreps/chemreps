@@ -7,3 +7,8 @@ coverage:
     - __init__.py
   status:
     patch: false
+  notify:
+    gitter:
+      default:
+        url: "https://webhooks.gitter.im/e/38fd54ab1418c7f2cf31"
+        threshold: 1%

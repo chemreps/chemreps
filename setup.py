@@ -10,7 +10,7 @@ def setup_chemreps():
         name='chemreps',
         maintainer='Dakota Folmsbee, Amanda Dumi, Shiv Upadhyay',
         maintainer_email='dfolmsbee@gmail.com, amandaedumi@gmail.com, shivnupadhyay@gmail.com',
-        version='0.0.4',
+        version=open("VERSION").read().strip(),
         packages=['chemreps', 'chemreps.utils'],
         package_data={'chemreps': ['data/*.pkl']},
         license='MIT License',
@@ -22,7 +22,7 @@ def setup_chemreps():
             "numpy>=1.12",
         ],
         classifiers=[
-            'Development Status :: 3 - Alpha',
+            'Development Status :: 4 - Beta',
             'Intended Audience :: Science/Research',
             'Programming Language :: Python',
             'License :: OSI Approved :: MIT License',
