@@ -1,15 +1,17 @@
 chemreps package
 ================
 
-Subpackages
------------
+.. automodule:: chemreps
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-.. toctree::
-
-    chemreps.utils
+.. contents::
 
 Submodules
 ----------
+
+.. toctree:: chemreps.utils
 
 chemreps.bagger module
 ----------------------
@@ -47,15 +49,6 @@ chemreps.just\_bonds module
 ---------------------------
 
 .. automodule:: chemreps.just_bonds
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: chemreps
     :members:
     :undoc-members:
     :show-inheritance:

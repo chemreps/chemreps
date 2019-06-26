@@ -6,11 +6,11 @@
 Welcome to chemreps's documentation!
 ====================================
 
-.. toctree::
-   :maxdepth: 2
+.. toctree:: chemreps
+   :maxdepth: 4
    :caption: Contents:
 
-
+.. mdinclude:: ../../README.md
 
 Indices and tables
 ==================

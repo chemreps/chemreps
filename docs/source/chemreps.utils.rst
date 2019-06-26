@@ -1,8 +1,12 @@
 chemreps.utils package
 ======================
 
-Submodules
-----------
+.. automodule:: chemreps.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. contents::
 
 chemreps.utils.bag\_handler module
 ----------------------------------
@@ -24,15 +28,6 @@ chemreps.utils.molecule module
 ------------------------------
 
 .. automodule:: chemreps.utils.molecule
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: chemreps.utils
     :members:
     :undoc-members:
     :show-inheritance:
