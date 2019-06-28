@@ -17,6 +17,7 @@ def setup_chemreps():
         url='https://github.com/chemreps/chemreps',
         description='Molecular machine learning representations',
         long_description=open('README.md').read(),
+        long_description_content_type='text/markdown',
         install_requires=[
             "cclib>=1.5",
             "numpy>=1.12",
