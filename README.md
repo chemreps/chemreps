@@ -51,3 +51,6 @@ If you need any help using chemreps, feel free to post in our [Gitter](https://g
 - These are attempts at the recreation of molecular representations from literature and may not be implemented properly.
     - If we do not implement something properly, feel free to make an issue.
 - This is solely a representation library and will not perform machine learning.
+
+## Citing
+Coming soon!
