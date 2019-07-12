@@ -1,5 +1,6 @@
 # chemreps
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![DOI](https://zenodo.org/badge/145903112.svg)](https://zenodo.org/badge/latestdoi/145903112)
 [![Documentation Status](https://readthedocs.org/projects/chemreps/badge/?version=latest)](https://chemreps.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/chemreps/chemreps/branch/master/graph/badge.svg)](https://codecov.io/gh/chemreps/chemreps)
 [![Build Status](https://travis-ci.com/chemreps/chemreps.svg?branch=master)](https://travis-ci.com/chemreps/chemreps)
@@ -53,4 +54,4 @@ If you need any help using chemreps, feel free to post in our [Gitter](https://g
 - This is solely a representation library and will not perform machine learning.
 
 ## Citing
-Coming soon! Releases will be on Zenodo!
+We now have a [Zenodo release!](https://doi.org/10.5281/zenodo.3333856)
