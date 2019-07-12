@@ -53,4 +53,4 @@ If you need any help using chemreps, feel free to post in our [Gitter](https://g
 - This is solely a representation library and will not perform machine learning.
 
 ## Citing
-Coming soon!
+Coming soon! Releases will be on Zenodo!
