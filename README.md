@@ -1,3 +1,5 @@
+<center><img src='chemreps.svg' width='50%'></center>
+
 # chemreps
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/145903112.svg)](https://zenodo.org/badge/latestdoi/145903112)
