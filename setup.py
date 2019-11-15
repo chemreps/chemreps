@@ -21,6 +21,7 @@ def setup_chemreps():
         install_requires=[
             "cclib>=1.5",
             "numpy>=1.12",
+            "qcelemental"
         ],
         classifiers=[
             'Development Status :: 4 - Beta',

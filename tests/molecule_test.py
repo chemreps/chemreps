@@ -1,4 +1,5 @@
 import pytest as pt
+import numpy as np
 from chemreps.utils.molecule import Molecule
 
 
@@ -28,6 +29,23 @@ def test_import_failure():
 def test_symbol():
     with pt.raises(KeyError):
         Molecule('data/incorrect/butane_incorrectsymbol.xyz')
+
+def test_connect_mat():
+    connect_mat_true = [[1,  2],
+                        [1,  3],
+                        [1,  5],
+                        [1,  6],
+                        [2,  4],
+                        [2,  7],
+                        [2,  8],
+                        [3,  9],
+                        [3, 10],
+                        [3, 11],
+                        [4, 12],
+                        [4, 13],
+                        [4, 14]]
+    d = Molecule('data/xyz/butane.xyz')
+    assert np.allclose(connect_mat_true,d.connect)
 
 
 if __name__ == "__main__":
