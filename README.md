@@ -40,6 +40,7 @@ chemreps requires:
 - Python (>=3.6)
 - NumPy (>=1.12)
 - cclib (>=1.5)
+- QCElemental
 
 ## Contributing
 If you are interested in helping develop for this project, please check out [Contributing to chemreps](https://github.com/chemreps/chemreps/wiki/Contributing-to-chemreps) in the wiki for a guide on how to get started.
