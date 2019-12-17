@@ -25,5 +25,9 @@ Representation tutorials:
     - BagMaker: How to make bags for your dataset
     - Just Bonds: How to make a representation for a molecule file
     - Handling multiple molecules: Example of how to make representations for an entire dataset
-    
+
+5. Morgan Fingerprints (Extended Connectivity Fingerprints or ECFP)
+    - Morgan Fingerprints: How to make a representation for a molecule file
+    - Handling multiple molecules: Example of how to make representations for an entire dataset
+
 Disclaimer: In order to run these interactive notebooks locally Jupyter needs to be installed.

@@ -16,6 +16,7 @@ chemreps is a Python package for the creation of molecular representations for t
 - Bag of Bonds
 - Bonds/Nonbonding, Angles, Torsions
 - Just Bonds
+- Morgan Fingerprints (RDKit Dependency)
 
 The citations for the literature from which the representations are implemented/adapted from can be found in the source code for each representation.
 
@@ -41,6 +42,9 @@ chemreps requires:
 - NumPy (>=1.12)
 - cclib (>=1.5)
 - QCElemental
+
+#### Optional Dependencies
+- RDKit (for Morgan Fingerprints)
 
 ## Contributing
 If you are interested in helping develop for this project, please check out [Contributing to chemreps](https://github.com/chemreps/chemreps/wiki/Contributing-to-chemreps) in the wiki for a guide on how to get started.

@@ -8,3 +8,4 @@ from . import bag_of_bonds
 from . import bat
 from . import just_bonds
 from . import dataset
+from . import fingerprints
