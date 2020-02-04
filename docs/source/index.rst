@@ -18,7 +18,7 @@ Representation requests
 -----------------------
 Requests for new representations to be added can be made by raising an issue and labeling it as a feature request. Before requesting a new representation, please check under the Representation project in the Projects tab to see if that representation is included in the current work or progress.
 
-Disclaimers:
+Disclaimers
 ------------
 - These are attempts at the recreation of molecular representations from literature and may not be implemented properly.
 - If we do not implement something properly, please make an issue to let us know.
@@ -31,3 +31,19 @@ If you need any help using chemreps, feel free to post in our `Gitter <https://g
 Citing
 ------
 We now have a `Zenodo release <https://doi.org/10.5281/zenodo.3333856>`_!
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Contents:
+   
+   install
+   examples
+   contributing
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
