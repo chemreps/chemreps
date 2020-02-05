@@ -1,10 +1,10 @@
-from chemreps.fingerprints import morganfp
 import numpy as np
 import pytest as pt
 from collections import OrderedDict
 
-
 def test_morganfp():
+    pt.importorskip("rdkit")
+    from chemreps.fingerprints import morganfp
     rep = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -64,3 +64,4 @@ def test_morganfp():
 
     with pt.raises(NotImplementedError):
         rep = morganfp('data/cclib/butane.cclib')
+
