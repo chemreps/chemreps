@@ -2,3 +2,4 @@
 exclude_lines =
     atomi, atomj = atomj, atomi
     a, c = c, a
+    if rdkit_loader is None:
