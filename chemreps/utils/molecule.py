@@ -432,12 +432,3 @@ def length(molecule, atomi, atomj):
     z = molecule.xyz[atomi][2] - molecule.xyz[atomj][2]
     rij = sqrt((x ** 2) + (y ** 2) + (z ** 2))
     return np.float16(rij)
-
-
-current_molecule = Molecule('2019807.cif')
-
-print(current_molecule.UCA, current_molecule.UCL, current_molecule.omega, '\n')
-
-print(current_molecule.n_atom, '\n',
-    current_molecule.sym, '\n', current_molecule.xyz)
-#print(current_molecule.uvw)
