@@ -21,6 +21,10 @@ def test_cml_import():
     d = Molecule('data/cml/butane.cml')
     assert d.n_atom == 14
 
+def test_cif_import():
+    d = Molecule('data/cif/cyclo_pentane.cif')
+    assert d.n_atom == 15
+
 def test_import_failure():
     with pt.raises(NotImplementedError):
         Molecule('data/incorrect/empty.abc')

@@ -200,6 +200,8 @@ class Molecule:
         except:
             return False
 
+    # Currently supports only updated .cif file (after 2000) - Needs to work 
+    # Currently only translate atoms from the cif file in a unitcell - needs to make a whole molecule.
     def import_cif(self, fname):
         """
         imports any files with .cif (crystallographic information file) format
@@ -261,6 +263,11 @@ class Molecule:
                 self.UCL.append(float(line.split()[1].replace('(', '').replace(')','')))
             elif "_cell_volume" in line:
                 self.omega = float(line.split()[1].replace('(', '').replace(')',''))
+            
+            #Parsing the space group, make use of space group to build the right structure           
+            elif "_symmetry_space_group_name_H-M" in line:
+                self.sg = line.split("'")[1].replace(" ","")
+
                 
 
 
