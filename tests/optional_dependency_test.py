@@ -10,12 +10,13 @@ def test_warning_raised_if_rdkit_not_installed():
     # clear cached modules
     mods = list(sys.modules.keys())
     for mod in mods:
-        if 'chemreps' in mod or 'RDkit' in mod:
+        if 'chemreps' in mod or 'rdkit' in mod:
             del sys.modules[mod]
 
-    sys.modules['RDkit'] = mock.MagicMock()
+    sys.modules['rdkit'] = mock.MagicMock()
     with warnings.catch_warnings(record=True) as w:
         import chemreps
+        assert len(w) > 0
         assert issubclass(w[-1].category, UserWarning)
         assert "RDKit was not found. As a result, the Morgan fingerprint representation module has not been imported." == str(w[-1].message)
-    del sys.modules['RDkit']
+    del sys.modules['rdkit']
