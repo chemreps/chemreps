@@ -2,6 +2,7 @@
 Initializing of the main representation functions
 '''
 import importlib
+import warnings
 from . import utils
 from . import bagger
 from . import coulomb_matrix
@@ -13,4 +14,4 @@ rdkit_loader = importlib.util.find_spec('rdkit')
 if rdkit_loader is not None:
     from . import fingerprints
 elif rdkit_loader is None: 
-    raise ImportWarning('RDKit was not found. As a result, the Morgan fingerprint representation module has not been imported.')
+    warnings.warn('RDKit was not found. As a result, the Morgan fingerprint representation module has not been imported.')
