@@ -1,5 +1,4 @@
 cclib
 numpy
 sphinx
-sphinxcontrib-napoleon
-m2r
+qcelemental
