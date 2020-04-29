@@ -1,9 +1,9 @@
-'''
+"""
 Various math functions
 
 References:
     - CrawfordGroup/ProgrammingProjects/Project#01 https://github.com/CrawfordGroup/ProgrammingProjects/tree/master/Project%2301
-'''
+"""
 import numpy as np
 from math import sqrt
 from math import acos
@@ -120,14 +120,15 @@ def torsion(molecule, atomi, atomj, atomk, atoml):
     b = np.array(molecule.xyz[atomj])
     c = np.array(molecule.xyz[atomk])
     d = np.array(molecule.xyz[atoml])
-    abcx = (uvec(1, b, a) * uvec(2, b, c) - uvec(2, b, a) * uvec(1, b, c))
-    abcy = (uvec(2, b, a) * uvec(0, b, c) - uvec(0, b, a) * uvec(2, b, c))
-    abcz = (uvec(0, b, a) * uvec(1, b, c) - uvec(1, b, a) * uvec(0, b, c))
-    bcdx = (uvec(1, c, b) * uvec(2, c, d) - uvec(2, c, b) * uvec(1, c, d))
-    bcdy = (uvec(2, c, b) * uvec(0, c, d) - uvec(0, c, b) * uvec(2, c, d))
-    bcdz = (uvec(0, c, b) * uvec(1, c, d) - uvec(1, c, b) * uvec(0, c, d))
+    abcx = uvec(1, b, a) * uvec(2, b, c) - uvec(2, b, a) * uvec(1, b, c)
+    abcy = uvec(2, b, a) * uvec(0, b, c) - uvec(0, b, a) * uvec(2, b, c)
+    abcz = uvec(0, b, a) * uvec(1, b, c) - uvec(1, b, a) * uvec(0, b, c)
+    bcdx = uvec(1, c, b) * uvec(2, c, d) - uvec(2, c, b) * uvec(1, c, d)
+    bcdy = uvec(2, c, b) * uvec(0, c, d) - uvec(0, c, b) * uvec(2, c, d)
+    bcdz = uvec(0, c, b) * uvec(1, c, d) - uvec(1, c, b) * uvec(0, c, d)
     x = abcx * bcdx
     y = abcy * bcdy
     z = abcz * bcdz
-    dihedral = abs((x + y + z)/(sin(ang(a, b, c)) * sin(ang(b, c, d))))
-    return np.float16(dihedral)
+    dihedral = (x + y + z) / (sin(ang(a, b, c)) * sin(ang(b, c, d)))
+    dihedral = acos(dihedral)
+    return np.abs(dihedral)
