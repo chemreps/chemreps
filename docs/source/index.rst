@@ -40,6 +40,7 @@ We now have a `Zenodo release <https://doi.org/10.5281/zenodo.3333856>`_!
    install
    examples
    contributing
+   chemreps
 
 Indices and tables
 ==================
