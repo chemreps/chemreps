@@ -1,0 +1,10 @@
+name: chemreps
+
+dependencies:
+  - python=3.7
+  - rdkit
+  - pip:
+    - cclib
+    - numpy
+    - sphinx
+    - qcelemental
