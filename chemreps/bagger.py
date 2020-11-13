@@ -17,6 +17,8 @@ from collections import OrderedDict
 from .utils.molecule import Molecule
 from .utils.bag_handler import bag_updater
 from .utils.bag_handler import bag_organizer
+from .utils.graphs import gen_graph
+from .utils.graphs import dfs_connections
 
 
 class BagMaker:
@@ -160,110 +162,61 @@ class BagMaker:
             # update bag_sizes with larger value
             bag_updater(bond_bag, bond_sizes)
 
-            # grab angles
+            # generate connectivity graph
+            graph = gen_graph(current_molecule.connect,
+                              current_molecule.n_atom)
+
+            # grab angles using depth first approach
             angles = []
-            angcon = []
-            for i in range(current_molecule.n_connect):
-                # This is a convoluted way of grabing angles but was one of the
-                # fastest. The connectivity is read through and all possible
-                # connections are made based on current_molecule.connect.
-                # current_molecule.connect then gets translated into
-                # current_molecule.sym to make bags based off of atom symbols
-                connect = []
-                for j in range(current_molecule.n_connect):
-                    if i in current_molecule.connect[j]:
-                        if i == current_molecule.connect[j][0]:
-                            connect.append(int(current_molecule.connect[j][1]))
-                        elif i == current_molecule.connect[j][1]:
-                            connect.append(int(current_molecule.connect[j][0]))
-                if len(connect) > 1:
-                    for k in range(len(connect)):
-                        for l in range(k + 1, len(connect)):
-                            a = current_molecule.sym[connect[k] - 1]
-                            b = current_molecule.sym[i - 1]
-                            c = current_molecule.sym[connect[l] - 1]
-                            if c < a:
-                                # swap for lexographic order
-                                a, c = c, a
-                            abc = a + b + c
-                            angles.append(abc)
-                            angcon.append([connect[k], i, connect[l]])
-            for i in range(len(angles)):
-                if angles[i] in angle_bag:
-                    angle_bag[angles[i]] += 1
+            for atom in graph:
+                # set length to 3 for angles
+                dfs_connections(graph, atom, 3, angles)
+
+            # iterate over angles and make bags
+            # .. TODO: can probably clean this up to use dfs
+            angle = []
+            for ang in angles:
+                a = current_molecule.sym[ang[0] - 1]
+                b = current_molecule.sym[ang[1] - 1]
+                c = current_molecule.sym[ang[2] - 1]
+                if c < a:
+                    # swap for lexographic order
+                    a, c = c, a
+                abc = a + b + c
+                angle.append(abc)
+
+            for i in range(len(angle)):
+                if angle[i] in angle_bag:
+                    angle_bag[angle[i]] += 1
                 else:
-                    angle_bag[angles[i]] = 1
+                    angle_bag[angle[i]] = 1
 
             # update bag_sizes with larger value
             bag_updater(angle_bag, angle_sizes)
 
-            # grab torsions
-            # This generates all torsions based on current_molecule.connect
-            # not on the current_molecule.sym (atom type)
-            tors = []
-            for i in range(current_molecule.n_connect):
-                # Iterate through the list of connected files and store
-                # them as b and c for an abcd torsion
-                b = int(current_molecule.connect[i][0])
-                c = int(current_molecule.connect[i][1])
-                for j in range(current_molecule.n_connect):
-                    # Join connected values on b of bc to make abc .
-                    # Below is done twice, swapping which to join on
-                    # to make sure and get all possibilities
-                    if int(current_molecule.connect[j][0]) == b:
-                        a = int(current_molecule.connect[j][1])
-                        # Join connected values on c of abc to make abcd.
-                        # Below is done twice, swapping which to join on
-                        # to make sure and get all possibilities
-                        for k in range(current_molecule.n_connect):
-                            if int(current_molecule.connect[k][0]) == c:
-                                d = int(current_molecule.connect[k][1])
-                                abcd = [a, b, c, d]
-                                if len(abcd) == len(set(abcd)):
-                                    tors.append(abcd)
-                        for k in range(current_molecule.n_connect):
-                            if int(current_molecule.connect[k][1]) == c:
-                                d = int(current_molecule.connect[k][0])
-                                abcd = [a, b, c, d]
-                                if len(abcd) == len(set(abcd)):
-                                    tors.append(abcd)
-                    elif int(current_molecule.connect[j][1]) == b:
-                        a = int(current_molecule.connect[j][0])
-                        for k in range(current_molecule.n_connect):
-                            if int(current_molecule.connect[k][0]) == c:
-                                d = int(current_molecule.connect[k][1])
-                                abcd = [a, b, c, d]
-                                if len(abcd) == len(set(abcd)):
-                                    tors.append(abcd)
-                        for k in range(current_molecule.n_connect):
-                            if int(current_molecule.connect[k][1]) == c:
-                                d = int(current_molecule.connect[k][0])
-                                abcd = [a, b, c, d]
-                                if len(abcd) == len(set(abcd)):
-                                    tors.append(abcd)
-
+            # grab torsions using depth first approach
             torsions = []
-            # This translates all of the torsions from current_molecule.connect
-            # to their symbol in order to make bags based upon the symbol
-            for i in range(len(tors)):
-                a = tors[i][0] - 1
-                b = tors[i][1] - 1
-                c = tors[i][2] - 1
-                d = tors[i][3] - 1
-                a_sym = current_molecule.sym[a]
-                b_sym = current_molecule.sym[b]
-                c_sym = current_molecule.sym[c]
-                d_sym = current_molecule.sym[d]
+            for atom in graph:
+                # set length to 4 for torsions
+                dfs_connections(graph, atom, 4, torsions)
+
+            # iterate over torsions and calculate theta
+            torsion = []
+            for tor in torsions:
+                a_sym = current_molecule.sym[tor[0] - 1]
+                b_sym = current_molecule.sym[tor[1] - 1]
+                c_sym = current_molecule.sym[tor[2] - 1]
+                d_sym = current_molecule.sym[tor[3] - 1]
                 if d_sym < a_sym:
                     # swap for lexographic order
                     a_sym, b_sym, c_sym, d_sym = d_sym, c_sym, b_sym, a_sym
                 abcd = a_sym + b_sym + c_sym + d_sym
-                torsions.append(abcd)
-            for i in range(len(torsions)):
-                if torsions[i] in torsion_bag:
-                    torsion_bag[torsions[i]] += 1
+                torsion.append(abcd)
+            for i in range(len(torsion)):
+                if torsion[i] in torsion_bag:
+                    torsion_bag[torsion[i]] += 1
                 else:
-                    torsion_bag[torsions[i]] = 1
+                    torsion_bag[torsion[i]] = 1
 
             # update bag_sizes with larger value
             bag_updater(torsion_bag, torsion_sizes)
