@@ -42,6 +42,7 @@ chemreps requires:
 - NumPy (>=1.12)
 - cclib (>=1.5)
 - QCElemental
+- SciPy
 
 #### Optional Dependencies
 - RDKit (for Morgan Fingerprints)
