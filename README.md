@@ -5,9 +5,9 @@
 [![DOI](https://zenodo.org/badge/145903112.svg)](https://zenodo.org/badge/latestdoi/145903112)
 [![Documentation Status](https://readthedocs.org/projects/chemreps/badge/?version=latest)](https://chemreps.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/chemreps/chemreps/branch/master/graph/badge.svg)](https://codecov.io/gh/chemreps/chemreps)
-[![Build Status](https://travis-ci.com/chemreps/chemreps.svg?branch=master)](https://travis-ci.com/chemreps/chemreps)
 [![Gitter Chat](https://img.shields.io/gitter/room/chemreps/community.svg)](https://gitter.im/chemreps/community)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/chemreps/chemreps/master?filepath=examples%2F)
+![Build Status](https://github.com/chemreps/chemreps/workflows/Build%20Status/badge.svg?branch=github_actions)
 
 chemreps is a Python package for the creation of molecular representations for the purpose of machine learning. The molecular representations included in this library are implemented/adapted from current literature. The aim of chemreps is to provide an easy to use library for making molecular representations that can be then used with machine learning packages such as Scikit-Learn and Tensorflow.
 
