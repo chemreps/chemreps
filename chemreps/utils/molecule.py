@@ -5,6 +5,8 @@ import numpy as np
 import cclib
 import os
 import qcelemental as qcel
+import re
+from math import sqrt, cos, sin, radians
 
 
 class Molecule:
@@ -28,7 +30,7 @@ class Molecule:
         so need to subtract 1 from connectivity when converting to atomic
         symbol). Size: (n_atom,2) (not for xyz)
     """
-    __accepted_file_formats = ['xyz', 'sdf', 'mol', 'cml']
+    __accepted_file_formats = ['xyz', 'sdf', 'mol', 'cml', 'cif']
 
     def __init__(self, fname=None):
         if fname is not None:
@@ -70,6 +72,8 @@ class Molecule:
             self.import_sdf(fname)
         elif filetype == 'cml':
             self.import_cml(fname)
+        elif filetype == 'cif':
+            self.import_cif(fname)
 
     def import_xyz(self, fname):
         """
@@ -195,6 +199,179 @@ class Molecule:
             return True
         except:
             return False
+
+    # Currently supports only updated .cif file (after 2000) - Needs to work 
+    # Currently only translate atoms from the cif file in a unitcell - needs to make a whole molecule.
+    def import_cif(self, fname):
+        """
+        imports any files with .cif (crystallographic information file) format
+        as a Molecule class instance
+
+        .cif file describes atomic coordinations with the fractional coordinates
+        from the unitcell angles (UCA) and lengths (UCL) of the crystal. 
+
+        ⌈   ⌉     ⌈                                            ⌉⌈   ⌉
+        ∣ x ∣     ∣  a      b⋅cos(γ)            c⋅cos(β)       ∣∣ u ∣
+        ∣   ∣     ∣                                            ∣∣   ∣
+        ∣   ∣     ∣                                            ∣∣   ∣
+        ∣   ∣     ∣                        cos(α)-cos(β)cos(γ) ∣∣   ∣
+        ∣ y ∣  =  ∣  0      b⋅sin(γ)    c ⋅------------------- ∣∣ v ∣
+        ∣   ∣     ∣                             sin(γ)         ∣∣   ∣
+        ∣   ∣     ∣                                            ∣∣   ∣
+        ∣   ∣     ∣                                Ω           ∣∣   ∣
+        ∣ z ∣     ∣  0          0             -------------    ∣∣ w ∣
+        ⌊   ⌋     ⌊                             ab⋅sin(γ)      ⌋⌊   ⌋
+        
+        Where x,y,z are carteisan coordinate, α,β,γ are unitcell angles (UCA),
+        a,b,c are unitcell lengths (UCL), Ω is unitcell volume,
+        and uvw fractional coordinates 
+
+        Currently collecting following information:
+
+        Unitcell angles (UCA), unitcell lengths (UCL), total volume (omega)
+        total atom number (n_atoms), atom symbols (sym),
+        atom labels (sym_l), atom number (at_num),
+        fractional atomic coordinates (uvw), cartesian atom coordinates (xyz),
+        connectivity (connect),
+        number of bonds (n_connect), bond labels and bond distances (bo_di).
+
+        Parameters
+        -----------
+        fname : string
+            cif filename
+        """
+        with open(fname, 'r') as f:
+            paragraphs = f.read().strip().split('loop_\n')
+            
+        # Collecting unitcell informations
+        ln_crys_cell = paragraphs[1].split('\n')
+        self.UCA = []
+        self.UCL = []
+        for line in ln_crys_cell:
+
+            if "_cell_angle_alpha" in line:
+                self.UCA.append(float(line.split()[1].replace('(', '').replace(')','')))
+            elif "_cell_angle_beta" in line:
+                self.UCA.append(float(line.split()[1].replace('(', '').replace(')','')))
+            elif "_cell_angle_gamma" in line:
+                self.UCA.append(float(line.split()[1].replace('(', '').replace(')','')))
+            elif "_cell_length_a" in line:
+                self.UCL.append(float(line.split()[1].replace('(', '').replace(')','')))
+            elif "_cell_length_b" in line:
+                self.UCL.append(float(line.split()[1].replace('(', '').replace(')','')))
+            elif "_cell_length_c" in line:
+                self.UCL.append(float(line.split()[1].replace('(', '').replace(')','')))
+            elif "_cell_volume" in line:
+                self.omega = float(line.split()[1].replace('(', '').replace(')',''))
+            
+            #Parsing the space group, make use of space group to build the right structure           
+            elif "_symmetry_space_group_name_H-M" in line:
+                self.sg = line.split("'")[1].replace(" ","")
+
+                
+
+
+        self.sym = []
+        self.sym_l = []
+        self.at_num = []
+        self.n_atom = 0
+        self.connect = []
+
+        for para in paragraphs:
+            if "_atom_site_label\n" in para or "_atom_site_type_symbol\n" in para:
+                ln = para.split('\n')
+                col = len([s for s in ln if s.startswith("_")])
+                col1 = len(ln) - col - 1
+
+                self.uvw = np.zeros((col1, 3)) #fractional coordinate respect to the unitcell
+                self.xyz = np.zeros((col1, 3)) # atomic coordinate in angstroms
+
+                for i, line in enumerate(ln[col:]):
+                    tmp = line.split()
+
+                    if len(tmp) < 2:
+                        pass
+                    else:
+                        # Parsing out the only elemental values (sym) 
+                        # from the atom labels (sym_l)
+                        sym_list = re.findall(
+                            '[A-Z][^A-Z]*', tmp[ln.index("_atom_site_label")])
+                        temp_sym = "".join(re.split("[^a-zA-Z]*", sym_list[0]))
+
+
+                        self.sym.append(temp_sym)
+                        self.sym_l.append(tmp[ln.index("_atom_site_label")])
+                        self.at_num.append(self.sym2num(temp_sym))
+                        
+                        # collecting fractional atomic cordinates
+                        self.uvw[i, 0] = float(
+                            tmp[ln.index("_atom_site_fract_x")].replace('(', '').replace(')',''))
+                        self.uvw[i, 1] = float(
+                            tmp[ln.index("_atom_site_fract_y")].replace('(', '').replace(')',''))
+                        self.uvw[i, 2] = float(
+                            tmp[ln.index("_atom_site_fract_z")].replace('(', '').replace(')',''))
+
+                        #solving the matrices above
+                        self.xyz[i, 0] = (self.UCL[0]*self.uvw[i, 0]
+                                        + self.UCL[1]*self.uvw[i, 1]*cos(radians(self.UCA[2]))
+                                        + self.UCL[2]*self.uvw[i, 2]*cos(radians(self.UCA[1])))
+                        
+                        self.xyz[i, 1] = (self.UCL[1]*self.uvw[i, 1]*sin(radians(self.UCA[2]))
+                                        + self.UCL[2]*self.uvw[i, 2]*(cos(radians(self.UCA[0]))
+                                        - cos(radians(self.UCA[1]))*cos(radians(self.UCA[2])))
+                                        /sin(radians(self.UCA[2])))
+
+                        self.xyz[i, 2] = (self.uvw[i, 2]*self.omega
+                                        /(self.UCL[0]*self.UCL[1]*sin(radians(self.UCA[2]))))
+
+                        """
+                        F2C = np.array([[self.UCL[0], self.UCL[1]*cos(radians(self.UCA[2])), self.UCL[2]*cos(radians(self.UCA[1]))],
+                                        [0, self.UCL[1]*sin(radians(self.UCA[2])), self.UCL[2]*(cos(radians(self.UCA(0)))-cos(radians(self.UCA[1]))*cos(radians(self.UCA[2])))/sin(radians(self.UCA(2)))],
+                                        [0, 0, self.omega/(self.UCL[0]*self.UCL[1]*sin(radians(self.UCA[2])))]])
+
+                        self.xyz[i] = numpy.dot(F2C, self.uvw[i])"""
+
+                # Rerunning the xyz lists to remove the coordinations
+                # that has lower than 0.5 occupancy values
+                if "_atom_site_occupancy" in ln:
+                    for i, line in enumerate(ln[col:]):
+                        tmp = line.split()
+                        if len(tmp) < 2:
+                            pass
+                        elif float(tmp[ln.index("_atom_site_occupancy")]) < 0.5:
+                            self.uvw = np.delete(self.uvw, i, 0)
+                            self.xyz = np.delete(self.xyz, i, 0)
+                        else:
+                            pass
+                            self.n_atom += float(
+                                tmp[ln.index("_atom_site_occupancy")])
+                else:
+                    self.n_atom = col1
+
+            # get bond distance data
+            elif "_geom_bond_distance" in para:
+                ln = para.split('\n')
+                col = len([s for s in ln if s.startswith("_")])
+                col1 = len(ln) - col - 1
+                self.bo_di = np.zeros((col1, 3), dtype=object)
+                for i, line in enumerate(ln[col:]):
+                    tmp = line.split()
+                    if len(tmp) < 2:
+                        pass
+                    else:
+                        self.bo_di[i, 0] = tmp[ln.index(
+                            "_geom_bond_atom_site_label_1")]
+                        self.bo_di[i, 1] = tmp[ln.index(
+                            "_geom_bond_atom_site_label_2")]
+                        self.bo_di[i, 2] = float(
+                            tmp[ln.index("_geom_bond_distance")].split()[0].replace('(', '').replace(')',''))
+                        a = self.sym_l.index(
+                            tmp[ln.index("_geom_bond_atom_site_label_1")])
+                        b = self.sym_l.index(
+                            tmp[ln.index("_geom_bond_atom_site_label_2")])
+                        self.connect.append([a, b])
+
+        self.n_connect = len(self.connect)
 
     def bond(self, i, j):
         """
