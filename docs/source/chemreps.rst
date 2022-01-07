@@ -45,6 +45,22 @@ chemreps.coulomb\_matrix module
     :undoc-members:
     :show-inheritance:
 
+chemreps.dataset module
+-------------------------------
+
+.. automodule:: chemreps.dataset
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+chemreps.fingerprints module
+-------------------------------
+
+.. automodule:: chemreps.fingerprints
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 chemreps.just\_bonds module
 ---------------------------
 

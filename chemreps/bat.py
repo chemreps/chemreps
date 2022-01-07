@@ -23,6 +23,8 @@ from .utils.bag_handler import bag_organizer
 from .utils.calcs import length
 from .utils.calcs import angle
 from .utils.calcs import torsion
+from .utils.graphs import gen_graph
+from .utils.graphs import dfs_connections
 
 
 def bat(mol_file, bags, bag_sizes):
@@ -61,82 +63,49 @@ def bat(mol_file, bags, bag_sizes):
                 bag_set[atomi].append(mii)
             else:
                 if zj > zi:
-                        # swap ordering
+                    # swap ordering
                     atomi, atomj = atomj, atomi
                 bond = "{}{}".format(atomi, atomj)
                 rij = length(current_molecule, i, j)
                 mij = (zi * zj) / rij
                 bag_set[bond].append(mij)
 
-    # grab angles
-    # This is dones similar to making the bags but with angle calculation
-    for i in range(current_molecule.n_connect):
-        connect = []
-        for j in range(current_molecule.n_connect):
-            if i in current_molecule.connect[j]:
-                if i == current_molecule.connect[j][0]:
-                    connect.append(int(current_molecule.connect[j][1]))
-                elif i == current_molecule.connect[j][1]:
-                    connect.append(int(current_molecule.connect[j][0]))
-        if len(connect) > 1:
-            for k in range(len(connect)):
-                for l in range(k + 1, len(connect)):
-                    k_c = connect[k] - 1
-                    i_c = i - 1
-                    l_c = connect[l] - 1
-                    a = current_molecule.sym[k_c]
-                    b = current_molecule.sym[i_c]
-                    c = current_molecule.sym[l_c]
-                    if c < a:
-                        # swap for lexographic order
-                        a, c = c, a
-                    abc = a + b + c
-                    theta = angle(current_molecule, k_c, i_c, l_c)
-                    bag_set[abc].append(theta)
+    # generate connectivity graph
+    graph = gen_graph(current_molecule.connect, current_molecule.n_atom)
 
-    # grab torsions
-    # This is dones similar to making the bags where only connection
-    # based upon connection number is made
-    tors = []
-    for i in range(current_molecule.n_connect):
-        b = int(current_molecule.connect[i][0])
-        c = int(current_molecule.connect[i][1])
-        for j in range(current_molecule.n_connect):
-            if int(current_molecule.connect[j][0]) == b:
-                a = int(current_molecule.connect[j][1])
-                for k in range(current_molecule.n_connect):
-                    if int(current_molecule.connect[k][0]) == c:
-                        d = int(current_molecule.connect[k][1])
-                        abcd = [a, b, c, d]
-                        if len(abcd) == len(set(abcd)):
-                            tors.append(abcd)
-                for k in range(current_molecule.n_connect):
-                    if int(current_molecule.connect[k][1]) == c:
-                        d = int(current_molecule.connect[k][0])
-                        abcd = [a, b, c, d]
-                        if len(abcd) == len(set(abcd)):
-                            tors.append(abcd)
-            elif int(current_molecule.connect[j][1]) == b:
-                a = int(current_molecule.connect[j][0])
-                for k in range(current_molecule.n_connect):
-                    if int(current_molecule.connect[k][0]) == c:
-                        d = int(current_molecule.connect[k][1])
-                        abcd = [a, b, c, d]
-                        if len(abcd) == len(set(abcd)):
-                            tors.append(abcd)
-                for k in range(current_molecule.n_connect):
-                    if int(current_molecule.connect[k][1]) == c:
-                        d = int(current_molecule.connect[k][0])
-                        abcd = [a, b, c, d]
-                        if len(abcd) == len(set(abcd)):
-                            tors.append(abcd)
-    # Once the connections are found based upon current_molecule.connect,
-    # they are translated into atom type bags and torsion angle calculated
-    for i in range(len(tors)):
-        a = tors[i][0] - 1
-        b = tors[i][1] - 1
-        c = tors[i][2] - 1
-        d = tors[i][3] - 1
+    # grab angles using depth first approach
+    angles = []
+    for atom in graph:
+        # set length to 3 for angles
+        dfs_connections(graph, atom, 3, angles)
+
+    # iterate over angles and calculate theta
+    for ang in angles:
+        k_c = ang[0] - 1
+        i_c = ang[1] - 1
+        l_c = ang[2] - 1
+        a = current_molecule.sym[k_c]
+        b = current_molecule.sym[i_c]
+        c = current_molecule.sym[l_c]
+        if c < a:
+            # swap for lexographic order
+            a, c = c, a
+        abc = a + b + c
+        theta = angle(current_molecule, k_c, i_c, l_c)
+        bag_set[abc].append(theta)
+
+    # grab torsions using depth first approach
+    torsions = []
+    for atom in graph:
+        # set length to 4 for torsions
+        dfs_connections(graph, atom, 4, torsions)
+
+    # iterate over torsions and calculate theta
+    for tor in torsions:
+        a = tor[0] - 1
+        b = tor[1] - 1
+        c = tor[2] - 1
+        d = tor[3] - 1
         a_sym = current_molecule.sym[a]
         b_sym = current_molecule.sym[b]
         c_sym = current_molecule.sym[c]

@@ -1,6 +1,4 @@
 cclib
 numpy
-pre-commit
 sphinx
-sphinxcontrib-napoleon
-m2r
+qcelemental

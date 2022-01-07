@@ -1,0 +1,14 @@
+name: chemreps
+
+channels:
+  - rdkit
+
+dependencies:
+  - python=3.7
+  - rdkit
+  - pip
+  - pip:
+    - cclib
+    - numpy
+    - sphinx
+    - qcelemental
